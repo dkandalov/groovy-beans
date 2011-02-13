@@ -8,15 +8,27 @@ class CsvReader {
 
   def header
 
-  List read(Reader inputReader) {
-    def result = []
+  List read(String fileName) {
+    read(new FileReader(fileName))
+  }
+
+  def readEachLine(String fileName, Closure closure) {
+    readEachLine(new FileReader(fileName), closure)
+  }
+
+  def readEachLine(Reader inputReader, Closure closure) {
     inputReader.eachLine { line, i ->
       if (i == 1) {
         header = readHeader(line) // TODO throw exception if this line is not what expected (like empty line)
       } else {
-        result << readBean(line)
+        closure.call(readBean(line))
       }
     }
+  }
+
+  List read(Reader inputReader) {
+    def result = []
+    readEachLine(inputReader) { result << it }
     result
   }
 
