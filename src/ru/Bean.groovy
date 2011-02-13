@@ -6,20 +6,43 @@ package ru
  */
 class Bean {
   def data = [:]
+  def beanType = [:]
 
   Bean() {
   }
 
   Bean(data) {
+    this(data, [:])
+  }
+
+  Bean(data, beanType) {
     this.data = data
+    withType(beanType)
+
+    if (!beanType.empty) {
+      applyBeanTypeConversion(data)
+    }
   }
 
-  @Override void setProperty(String property, Object newValue) {
-    data[property] = newValue
+  private def applyBeanTypeConversion(data) {
+    data.each { setProperty(it.key, it.value) }
   }
 
-  @Override Object getProperty(String property) {
-    data[property]
+  Bean withType(def beanType) {
+    this.beanType = beanType
+    this
+  }
+
+  @Override void setProperty(String propertyName, Object newValue) {
+    if (beanType.containsKey(propertyName)) {
+      data[propertyName] = beanType[propertyName].convert(newValue)
+    } else {
+      data[propertyName] = newValue
+    }
+  }
+
+  @Override Object getProperty(String propertyName) {
+    data[propertyName]
   }
 
   @Override boolean equals(o) {

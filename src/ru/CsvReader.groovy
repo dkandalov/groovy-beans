@@ -1,12 +1,18 @@
 package ru
 
-/**
+ /**
  * User: dima
  * Date: 9/2/11
  */
 class CsvReader {
 
   def header
+  def beanType = [:]
+
+  CsvReader withBeanType(def beanType) {
+    this.beanType = beanType
+    this
+  }
 
   List read(String fileName) {
     read(new FileReader(fileName))
@@ -41,10 +47,11 @@ class CsvReader {
     header.eachWithIndex { columnName, i ->
       map.put(columnName, values[i])
     }
-    new Bean(map)
+    new Bean(map, beanType)
   }
 
   def readHeader(String s) {
     header = s.split(",")
   }
+
 }

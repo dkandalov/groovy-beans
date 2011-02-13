@@ -1,6 +1,7 @@
 package ru
 
 import org.junit.Test
+import static ru.BeanType.*
 
 /**
  * User: dima
@@ -73,5 +74,18 @@ AA,4,5.0,
     shouldFail(IllegalStateException.class) {
       reader.read(stringReader)
     }
+  }
+
+  @Test public void shouldUseBeanType() {
+    def stringReader = new StringReader("""a,b,c
+A,2,3.0
+AA,4,5.0
+""")
+    def reader = new CsvReader().withBeanType([a: STRING, b: INTEGER, c: DOUBLE])
+    def actual = reader.read(stringReader)
+    assert actual == [
+            new Bean([a: "A", b: 2, c: 3.0d]),
+            new Bean([a: "AA", b: 4, c: 5.0d])
+    ]
   }
 }

@@ -2,7 +2,7 @@ package ru
 
 import org.junit.Test
 
-/**
+ /**
  * User: dima
  * Date: 8/2/11
  */
@@ -41,5 +41,33 @@ class BeanTest {
     bean.a = 1.0
 
     assert bean.toString() == "[a:1.0]"
+  }
+
+  @Test public void shouldUseTypeWhenPropertyIsAssigned() {
+    def bean = new Bean().withType([name: BeanType.STRING, id: BeanType.INTEGER, price: BeanType.DOUBLE])
+
+    bean.name = "aName"
+    assert bean.name == "aName"
+    bean.name = 123
+    assert bean.name == "123"
+
+    bean.id = 123
+    assert bean.id == 123
+    bean.id = "234"
+    assert bean.id == 234
+
+    bean.price = 1.2d
+    assert bean.price == 1.2
+    bean.price = "1.23"
+    assert bean.price == 1.23
+  }
+
+  @Test public void shouldUseTypeWhenBeanIsCreatedFromMap() {
+    def data = [name:"aName", id: "123", price: "1.23"]
+    def bean = new Bean(data, [name: BeanType.STRING, id: BeanType.INTEGER, price: BeanType.DOUBLE])
+
+    assert bean.name == "aName"
+    assert bean.id == 123
+    assert bean.price == 1.23
   }
 }
