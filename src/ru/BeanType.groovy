@@ -14,8 +14,8 @@ class BeanType {
   static def DATE(def format) {
     def dateTypeId = "DATE_${format}"
 
-    new Convertor(dateTypeId, { mapping ->
-      mapping[String.class] << ["$dateTypeId": {new SimpleDateFormat(format).parse(it)}]
+    new Convertor(dateTypeId, { typeMapping ->
+      typeMapping[String.class] << ["$dateTypeId": {new SimpleDateFormat(format).parse(it)}]
     })
   }
 

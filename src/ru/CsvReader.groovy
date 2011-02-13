@@ -1,6 +1,6 @@
 package ru
 
- /**
+/**
  * User: dima
  * Date: 9/2/11
  */
