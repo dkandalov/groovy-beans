@@ -1,10 +1,13 @@
 package ru
 
+import ru.csv.CsvReader
+import ru.csv.CsvWriter
 import ru.jfchart.JFC_Playground
 import static ru.beans.BeanType.*
-import ru.csv.CsvReader
 
 def quotesFile = "/Users/dima/IdeaProjects/groovy-beans/data/Quotes.csv"
+def ohlcFile = "/Users/dima/IdeaProjects/groovy-beans/data/OHLC.csv"
+
 def ohlcType = [
         date: DATE("dd/MM/yyyy"),
         instrument: STRING,
@@ -50,14 +53,18 @@ private static class SimpleAverage {
 
 def series = JFC_Playground.showBeans()
 def average = new SimpleAverage(100)
+def ohlc = []
 new CsvReader().withBeanType(ohlcType).readEachLine(quotesFile) {
   if (it.instrument == "AA") {
     average.leftShift(it.open)
     if (average.hasValue()) {
       series[1].add((long) it.date.time, (double) average.getValue())
+      ohlc << average.getValue()
     }
 
     series[0].add((long) it.date.time, (double) it.open)
 //    series[1].add((long) it.date.time, (double) it.open + 3)
   }
 }
+
+new CsvWriter().write(ohlc, ohlcFile)

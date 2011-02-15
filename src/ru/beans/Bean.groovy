@@ -1,12 +1,26 @@
 package ru.beans
 
 /**
+ * A storage for any data. It's like {@link Expando} but with additional features.
+ *
+ * Should have:
+ *  - nice bean: allows to read/write any property
+ *  - strict bean: only allows to read/write properties from "beanType"
+ *
  * User: dima
  * Date: 8/2/11
  */
 class Bean {
-  def data = [:]
-  def beanType = [:]
+  private def data = [:]
+  private def beanType = [:]
+
+  static List beans(Map... data) {
+    data.collect {new Bean(it)}
+  }
+
+  static Bean bean(Map data) {
+    new Bean(data)
+  }
 
   Bean() {
   }
@@ -31,6 +45,10 @@ class Bean {
   Bean withType(def beanType) {
     this.beanType = beanType
     this
+  }
+
+  List getFieldNames() {
+    data.keySet().toList()
   }
 
   @Override void setProperty(String propertyName, Object newValue) {

@@ -34,6 +34,12 @@ class CsvReader {
     read(new FileReader(fileName))
   }
 
+  List read(Reader inputReader) {
+    def result = []
+    readEachLine(inputReader) { result << it }
+    result
+  }
+
   def readEachLine(String fileName, Closure closure) {
     readEachLine(new FileReader(fileName), closure)
   }
@@ -46,12 +52,6 @@ class CsvReader {
         closure.call(readBean(line))
       }
     }
-  }
-
-  List read(Reader inputReader) {
-    def result = []
-    readEachLine(inputReader) { result << it }
-    result
   }
 
   private def readBean(String s) {
