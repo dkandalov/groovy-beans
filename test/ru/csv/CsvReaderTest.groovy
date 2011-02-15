@@ -1,7 +1,9 @@
-package ru
+package ru.csv
 
 import org.junit.Test
-import static ru.BeanType.*
+import static ru.beans.BeanType.*
+import ru.beans.Bean
+import ru.csv.CsvReader
 
 /**
  * User: dima
@@ -81,7 +83,7 @@ AA,4,5.0,
 A,2,3.0
 AA,4,5.0
 """)
-    def reader = new CsvReader().withBeanType([a: STRING, b: INTEGER, c: DOUBLE])
+    def reader = new CsvReader().withBeanType([a: ru.beans.BeanType.STRING, b: ru.beans.BeanType.INTEGER, c: ru.beans.BeanType.DOUBLE])
     def actual = reader.read(stringReader)
     assert actual == [
             new Bean([a: "A", b: 2, c: 3.0d]),

@@ -1,6 +1,22 @@
-package ru
+package ru.csv
+
+import ru.beans.Bean
 
 /**
+ * Reads {@link Bean}s from csv file.
+ *
+ * Should:
+ *  + read file in one go
+ *  + read file line by line
+ *    - it would be useful to have "streams" of data and be able to sequence them in functional style
+ *
+ *  + read all columns into beans as is
+ *  - read subset of columns
+ *
+ *  - detect when file content doesn't match "beanType"
+ *    - nice reader: fill fields that match
+ *    - strict reader: fail fast
+ *
  * User: dima
  * Date: 9/2/11
  */
@@ -38,7 +54,7 @@ class CsvReader {
     result
   }
 
-  def readBean(String s) {
+  private def readBean(String s) {
     def values = s.split(",", -1)
     if (values.size() < header.size()) throw new IllegalStateException("Too few values in line \"${s}\"")
     if (values.size() > header.size()) throw new IllegalStateException("Too many values in line \"${s}\"")
@@ -50,7 +66,7 @@ class CsvReader {
     new Bean(map, beanType)
   }
 
-  def readHeader(String s) {
+  private def readHeader(String s) {
     header = s.split(",")
   }
 

@@ -8,3 +8,7 @@ TODOs:
 
  - simple jtable for beans
  - simple graphs for beans
+
+
+CSV writer:
+

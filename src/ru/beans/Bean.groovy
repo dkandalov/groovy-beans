@@ -1,4 +1,4 @@
-package ru
+package ru.beans
 
 /**
  * User: dima

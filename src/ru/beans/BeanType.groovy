@@ -1,4 +1,4 @@
-package ru
+package ru.beans
 
 import java.text.SimpleDateFormat
 

@@ -1,7 +1,8 @@
-package ru
+package ru.beans
 
 import org.junit.Test
 import static ru.Util.date
+import ru.beans.BeanType
 
 /**
  * User: dima

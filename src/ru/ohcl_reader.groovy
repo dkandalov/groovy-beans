@@ -1,7 +1,8 @@
 package ru
 
 import ru.jfchart.JFC_Playground
-import static ru.BeanType.*
+import static ru.beans.BeanType.*
+import ru.csv.CsvReader
 
 def quotesFile = "/Users/dima/IdeaProjects/groovy-beans/data/Quotes.csv"
 def ohlcType = [

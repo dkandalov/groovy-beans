@@ -1,8 +1,10 @@
-package ru
+package ru.beans
 
 import org.junit.Test
+import ru.beans.BeanType
+import ru.beans.Bean
 
- /**
+/**
  * User: dima
  * Date: 8/2/11
  */
