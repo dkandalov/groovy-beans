@@ -3,7 +3,7 @@ package ru.beans
 /**
  * A storage for any data. It's like {@link Expando} but with additional features.
  *
- * Should have:
+ * Should:
  *  - nice bean: allows to read/write any property
  *  - strict bean: only allows to read/write properties from "beanType"
  *

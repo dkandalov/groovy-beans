@@ -1,8 +1,6 @@
 package ru.beans
 
 import org.junit.Test
-import ru.beans.BeanType
-import ru.beans.Bean
 
 /**
  * User: dima
@@ -16,6 +14,12 @@ class BeanTest {
 
     assert bean.a == 123
     assert bean.b == "abc"
+  }
+
+  @Test public void shouldReturnNullForNotExistingProperties() {
+    def bean = new Bean([a: 123])
+    assert bean.a == 123
+    assert bean.b == null
   }
 
   @Test public void shouldBeAbleToSetPropertyWithTheSameNameAsInternalMap() {
@@ -65,7 +69,7 @@ class BeanTest {
   }
 
   @Test public void shouldUseTypeWhenBeanIsCreatedFromMap() {
-    def data = [name:"aName", id: "123", price: "1.23"]
+    def data = [name: "aName", id: "123", price: "1.23"]
     def bean = new Bean(data, [name: BeanType.STRING, id: BeanType.INTEGER, price: BeanType.DOUBLE])
 
     assert bean.name == "aName"

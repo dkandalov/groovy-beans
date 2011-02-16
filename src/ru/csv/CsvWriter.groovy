@@ -27,12 +27,13 @@ import ru.beans.Bean
  */
 class CsvWriter {
   private def header = []
+  private def fieldsToWrite = []
 
-  def write(String fileName, List<Bean> beans) {
-    write(new FileWriter(fileName), beans)
+  def writeTo(String fileName, List<Bean> beans) {
+    writeTo(new FileWriter(fileName), beans)
   }
 
-  def write(Writer writer, List beans) {
+  def writeTo(Writer writer, List beans) {
     if (beans.empty) return
     header = getHeaderFrom(beans)
 
@@ -42,8 +43,20 @@ class CsvWriter {
     }
   }
 
+  CsvWriter usingFields(List<String> fieldNames) {
+    fieldsToWrite = new ArrayList(fieldNames)
+    this
+  }
+
+  CsvWriter usingOrder(List<String> fieldNames) {
+    this
+  }
+
   private String beanAsString(def bean) {
-    header.collect { bean."$it" }.join(",") + "\n"
+    header.collect {
+      def value = bean."$it"
+      (value == null ? "" : value) // I don't think anyone ever need "null" values in .csv file
+    }.join(",") + "\n"
   }
 
   private String headerAsString(List header) {
@@ -51,6 +64,12 @@ class CsvWriter {
   }
 
   private List getHeaderFrom(List beans) {
-    beans[0].getFieldNames()
+    if (!fieldsToWrite.empty) return fieldsToWrite
+
+    def result = new LinkedHashSet()
+    beans.each { bean ->
+      bean.getFieldNames().each { result.add(it) }
+    }
+    result.toList()
   }
 }

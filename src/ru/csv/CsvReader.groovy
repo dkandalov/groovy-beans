@@ -13,6 +13,8 @@ import ru.beans.Bean
  *  + read all columns into beans as is
  *  - read subset of columns
  *
+ *  - smart reader: should guess field types according to file content (try all date formats, integer, double, string)
+ *
  *  - detect when file content doesn't match "beanType"
  *    - nice reader: fill fields that match
  *    - strict reader: fail fast
