@@ -1,6 +1,7 @@
 package ru.beans
 
 import org.junit.Test
+import static ru.beans.Bean.bean
 
 /**
  * User: dima
@@ -75,5 +76,10 @@ class BeanTest {
     assert bean.name == "aName"
     assert bean.id == 123
     assert bean.price == 1.23
+  }
+
+  @Test public void shouldReturnBeanFields() {
+    def bean = bean([a: "A", b: 123])
+    assert bean.fieldNames() == ["a", "b"]
   }
 }

@@ -52,8 +52,8 @@ class Bean {
     this
   }
 
-  List getFieldNames() {
-    data.keySet().toList()
+  List fieldNames() {
+    new LinkedList(data.keySet().toList())
   }
 
   @Override void setProperty(String propertyName, Object newValue) {

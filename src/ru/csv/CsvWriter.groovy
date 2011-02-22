@@ -71,7 +71,7 @@ class CsvWriter {
   private List getHeaderFrom(List beans) {
     def header = new LinkedHashSet()
     beans.each { bean ->
-      bean.getFieldNames().each { header.add(it) }
+      bean.fieldNames().each { header.add(it) }
     }.toList()
 
     fieldsOrder + (header - fieldsOrder)
