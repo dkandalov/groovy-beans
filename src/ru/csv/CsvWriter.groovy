@@ -6,15 +6,15 @@ import ru.beans.Bean
  * Reads {@link ru.beans.Bean}s from csv file.
  *
  * Should:
- *  - write to file collection of beans
+ *  + write to file collection of beans
  *  - write to file bean after bean
  *
- *  - write beans as is to .csv file
+ *  + write beans as is to .csv file
  *    - active writer: get csv header as a union of all possible fields in beans list
  *    - passive writer: get csv header as fields from the first bean
  *    -- (probably it should be done before writing using operations on beans) instructed writer: writes specified subset of fields
- *  - write bean fields in particular order
- *  - write beans using specific convertors (e.g. date convertors)
+ *  + write bean fields in particular order
+ *  + write beans using specific convertors (e.g. date convertors)
  *
  *  - detect when beans don't match header
  *    - nice writer: adds empty string
@@ -44,7 +44,7 @@ class CsvWriter {
     writeTo(new FileWriter(fileName), beans)
   }
 
-  def writeTo(Writer writer, List beans) {
+  def writeTo(Writer writer, List<Bean> beans) {
     if (beans.empty) return
     header = getHeaderFrom(beans)
 

@@ -1,9 +1,8 @@
 package ru.csv
 
 import org.junit.Test
-import static ru.beans.BeanType.*
 import ru.beans.Bean
-import ru.csv.CsvReader
+import ru.beans.BeanType
 
 /**
  * User: dima
@@ -83,11 +82,24 @@ AA,4,5.0,
 A,2,3.0
 AA,4,5.0
 """)
-    def reader = new CsvReader().withBeanType([a: ru.beans.BeanType.STRING, b: ru.beans.BeanType.INTEGER, c: ru.beans.BeanType.DOUBLE])
+    def reader = new CsvReader().withBeanType([a: BeanType.STRING, b: BeanType.INTEGER, c: BeanType.DOUBLE])
     def actual = reader.read(stringReader)
     assert actual == [
             new Bean([a: "A", b: 2, c: 3.0d]),
             new Bean([a: "AA", b: 4, c: 5.0d])
+    ]
+  }
+
+  @Test public void shouldReadSubsetOfColumnFromCsvFile() {
+    def stringReader = new StringReader("""a,b,c
+A,2,3.0
+AA,4,5.0
+""")
+    def reader = new CsvReader().usingColumns(["a", "c"]).withBeanType([a: BeanType.STRING, b: BeanType.INTEGER, c: BeanType.DOUBLE])
+    def actual = reader.read(stringReader)
+    assert actual == [
+            new Bean([a: "A", c: 3.0d]),
+            new Bean([a: "AA", c: 5.0d])
     ]
   }
 }

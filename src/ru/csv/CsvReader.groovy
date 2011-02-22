@@ -11,7 +11,7 @@ import ru.beans.Bean
  *    - it would be useful to have "streams" of data and be able to sequence them in functional style
  *
  *  + read all columns into beans as is
- *  - read subset of columns
+ *  + read subset of columns
  *
  *  - smart reader: should guess field types according to file content (try all date formats, integer, double, string)
  *
@@ -26,9 +26,16 @@ class CsvReader {
 
   def header
   def beanType = [:]
+  List columnsToRead = []
+  Map columnMapping = new LinkedHashMap()
 
   CsvReader withBeanType(def beanType) {
     this.beanType = beanType
+    this
+  }
+
+  CsvReader usingColumns(List columnsToRead) {
+    this.columnsToRead = columnsToRead
     this
   }
 
@@ -50,6 +57,7 @@ class CsvReader {
     inputReader.eachLine { line, i ->
       if (i == 1) {
         header = readHeader(line) // TODO throw exception if this line is not what expected (like empty line)
+        prepareHeaderMapping()
       } else {
         closure.call(readBean(line))
       }
@@ -62,14 +70,24 @@ class CsvReader {
     if (values.size() > header.size()) throw new IllegalStateException("Too many values in line \"${s}\"")
 
     def map = [:]
-    header.eachWithIndex { columnName, i ->
-      map.put(columnName, values[i])
+    columnMapping.each {
+      map.put(it.key, values[it.value])
     }
     new Bean(map, beanType)
   }
 
   private def readHeader(String s) {
-    header = s.split(",")
+    s.split(",").toList()
   }
 
+  private def prepareHeaderMapping() {
+    if (!header.containsAll(columnsToRead)) throw new IllegalStateException()
+
+    columnMapping = new LinkedHashMap()
+    header.eachWithIndex {columnName, columnIndex -> columnMapping.put(columnName, columnIndex) }
+
+    if (!columnsToRead.empty) {
+      columnMapping = columnMapping.findAll { columnsToRead.contains(it.key) }
+    }
+  }
 }
