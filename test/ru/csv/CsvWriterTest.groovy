@@ -1,10 +1,11 @@
 package ru.csv
 
 import org.junit.Test
+import ru.beans.BeanType
 import static ru.Util.date
 import static ru.beans.Bean.beans
 
- /**
+/**
  * User: dima
  * Date: 15/2/11
  */
@@ -48,14 +49,14 @@ A,,
 """
   }
 
-  @Test public void shouldWriteBeanValuesUsingConverters() {
+  @Test public void shouldUseConvertors() {
     def csv = new StringWriter()
-    def beans = beans([a: date(2011, 02, 17), b: 2, c: 3.0], [a: date(2010, 02, 20), b: 4, c: 5.0])
-//    new CsvWriter().usingConvertors(["c" : BeanType.DATE(), "a"]).writeTo(csv, beans)
+    def beans = beans([a: date(17, 02, 2011), b: 2, c: 3.0], [a: date(20, 02, 2011), b: 4, c: 5.0])
+    new CsvWriter().usingConvertors(["a" : BeanType.DATE_AS_STRING("dd/MM/yyyy")]).writeTo(csv, beans)
 
-    assert csv.toString() == """c,a,b
-3.0,A,2
-5.0,B,4
+    assert csv.toString() == """a,b,c
+17/02/2011,2,3.0
+20/02/2011,4,5.0
 """
   }
 }

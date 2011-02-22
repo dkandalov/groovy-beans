@@ -28,9 +28,15 @@ import ru.beans.Bean
 class CsvWriter {
   private def header = []
   private def fieldsOrder = []
+  private Map convertors = [:]
 
   CsvWriter usingOrder(List<String> fieldsOrder) {
     this.fieldsOrder = fieldsOrder
+    this
+  }
+
+  CsvWriter usingConvertors(Map convertors) {
+    this.convertors = convertors
     this
   }
 
@@ -51,6 +57,9 @@ class CsvWriter {
   private String beanAsString(def bean) {
     header.collect {
       def value = bean."$it"
+      if (convertors.containsKey(it)) {
+        value = convertors.get(it).convert(value)
+      }
       (value == null ? "" : value) // I don't think anyone ever need "null" values in .csv file
     }.join(",") + "\n"
   }

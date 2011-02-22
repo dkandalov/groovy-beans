@@ -1,6 +1,7 @@
 package ru.beans
 
 import org.junit.Test
+import ru.Util
 import static ru.Util.date
 
 /**
@@ -22,6 +23,11 @@ class BeanTypeTest {
     assert bean.date == date(01, 04, 2012)
 
     shouldFail { bean.date = "some stuff which is not properly formatted" }
+  }
+
+  @Test public void shouldConvertDateIntoFormattedString() {
+    def beanType = BeanType.DATE_AS_STRING("MM/yyyy")
+    assert beanType.convert(Util.date(01, 02, 2011)) == "02/2011"
   }
 
   @Test public void shouldConvertIntoString() {

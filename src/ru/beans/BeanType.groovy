@@ -17,6 +17,12 @@ class BeanType {
     put Double.class, { it.toString() }
   })
 
+  static def DATE_AS_STRING(def format) {
+    new Convertor("DATE_AS_STRING_$format", {
+      put Date.class, { new SimpleDateFormat(format).format(it) }
+    })
+  }
+
   static def INTEGER = new Convertor("INTEGER", {
     put String.class, { Integer.parseInt(it) }
     put Integer.class, { it }
