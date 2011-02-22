@@ -4,10 +4,10 @@ package ru.beans
  * A storage for any data. It's like {@link Expando} but with additional features.
  *
  * Should:
- *  - nice bean: allows to read/write any property
+ *  + nice bean: allows to read/write any property
  *  - strict bean: only allows to read/write properties from "beanType"
  *
- *  - case sensitive/insensitive ("instrumentid" changes the same field as "InstrumentID")
+ *  + case sensitive/insensitive ("instrumentid" changes the same field as "InstrumentID")
  *
  *  - be able to diff beans
  *  - be able to do sql-like operations on beans
@@ -18,6 +18,7 @@ package ru.beans
 class Bean {
   private def data = [:]
   private def beanType = [:]
+  private def fieldNamesMap = [:]
 
   static List beans(Map... data) {
     data.collect {new Bean(it)}
@@ -34,8 +35,9 @@ class Bean {
     this(data, [:])
   }
 
-  Bean(data, beanType) {
-    this.data = data
+  Bean(Map data, Map beanType) {
+    this.data = new LinkedHashMap(data) // must be linked map to preserve columns order
+    initFieldNames(data)
     withType(beanType)
 
     if (!beanType.empty) {
@@ -43,8 +45,8 @@ class Bean {
     }
   }
 
-  private def applyBeanTypeConversion(data) {
-    data.each { setProperty(it.key, it.value) }
+  private def applyBeanTypeConversion(newData) {
+    newData.each { setProperty(it.key, it.value) }
   }
 
   Bean withType(def beanType) {
@@ -53,10 +55,12 @@ class Bean {
   }
 
   List fieldNames() {
-    new LinkedList(data.keySet().toList())
+    fieldNamesMap.values().toList()
   }
 
   @Override void setProperty(String propertyName, Object newValue) {
+    propertyName = internalNameOf(propertyName)
+
     if (beanType.containsKey(propertyName)) {
       data[propertyName] = beanType[propertyName].convert(newValue)
     } else {
@@ -65,7 +69,19 @@ class Bean {
   }
 
   @Override Object getProperty(String propertyName) {
-    data[propertyName]
+    data[internalNameOf(propertyName)]
+  }
+
+  private def initFieldNames(Map data) {
+    fieldNamesMap = data.keySet().inject([:]) { Map namesMap, key ->
+      namesMap.put(key.toLowerCase(), key) // TODO for some reason I couldn't reference outer class fields in this closure. Investigate.
+      namesMap
+    }
+  }
+
+  private def internalNameOf(String propertyName) {
+    String mappedName = fieldNamesMap.get(propertyName.toLowerCase())
+    mappedName != null ? mappedName : propertyName
   }
 
   @Override boolean equals(o) {

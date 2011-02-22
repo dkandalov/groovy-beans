@@ -79,7 +79,16 @@ class BeanTest {
   }
 
   @Test public void shouldReturnBeanFields() {
-    def bean = bean([a: "A", b: 123])
-    assert bean.fieldNames() == ["a", "b"]
+    def bean = bean([instrumentId: "A", sIZe: 123])
+    assert bean.fieldNames() == ["instrumentId", "sIZe"]
+  }
+
+  @Test public void shouldBeCaseInsensitive() {
+    def bean = bean([instrumentId: "A"])
+    bean.instrumentId = 123
+    assert bean.InstrumentID == 123
+
+    bean.instrumentid = 234
+    assert bean.instrumentid == 234
   }
 }
