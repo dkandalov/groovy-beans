@@ -67,4 +67,4 @@ new CsvReader().withBeanType(ohlcType).readEachLine(quotesFile) {
   }
 }
 
-new CsvWriter().writeTo(ohlc, ohlcFile)
+new CsvWriter().writeTo(ohlcFile, ohlc)

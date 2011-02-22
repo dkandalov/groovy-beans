@@ -6,13 +6,13 @@ import ru.beans.Bean
  * Reads {@link ru.beans.Bean}s from csv file.
  *
  * Should:
- *  - write to file a collection of beans
+ *  - write to file collection of beans
  *  - write to file bean after bean
  *
  *  - write beans as is to .csv file
  *    - active writer: get csv header as a union of all possible fields in beans list
  *    - passive writer: get csv header as fields from the first bean
- *    - instructed writer: writes specified subset of fields
+ *    -- (probably it should be done before writing using operations on beans) instructed writer: writes specified subset of fields
  *  - write bean fields in particular order
  *  - write beans using specific convertors (e.g. date convertors)
  *
@@ -27,7 +27,12 @@ import ru.beans.Bean
  */
 class CsvWriter {
   private def header = []
-  private def fieldsToWrite = []
+  private def fieldsOrder = []
+
+  CsvWriter usingOrder(List<String> fieldsOrder) {
+    this.fieldsOrder = fieldsOrder
+    this
+  }
 
   def writeTo(String fileName, List<Bean> beans) {
     writeTo(new FileWriter(fileName), beans)
@@ -43,15 +48,6 @@ class CsvWriter {
     }
   }
 
-  CsvWriter usingFields(List<String> fieldNames) {
-    fieldsToWrite = new ArrayList(fieldNames)
-    this
-  }
-
-  CsvWriter usingOrder(List<String> fieldNames) {
-    this
-  }
-
   private String beanAsString(def bean) {
     header.collect {
       def value = bean."$it"
@@ -64,12 +60,11 @@ class CsvWriter {
   }
 
   private List getHeaderFrom(List beans) {
-    if (!fieldsToWrite.empty) return fieldsToWrite
-
-    def result = new LinkedHashSet()
+    def header = new LinkedHashSet()
     beans.each { bean ->
-      bean.getFieldNames().each { result.add(it) }
-    }
-    result.toList()
+      bean.getFieldNames().each { header.add(it) }
+    }.toList()
+
+    fieldsOrder + (header - fieldsOrder)
   }
 }

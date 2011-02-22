@@ -7,6 +7,11 @@ package ru.beans
  *  - nice bean: allows to read/write any property
  *  - strict bean: only allows to read/write properties from "beanType"
  *
+ *  - case sensitive/insensitive ("instrumentid" changes the same field as "InstrumentID")
+ *
+ *  - be able to diff beans
+ *  - be able to do sql-like operations on beans
+ *
  * User: dima
  * Date: 8/2/11
  */

@@ -1,6 +1,7 @@
 package ru.csv
 
 import org.junit.Test
+import static ru.Util.date
 import static ru.beans.Bean.beans
 
  /**
@@ -25,7 +26,7 @@ B,4,5.0
 """
   }
 
-  @Test public void shouldWriteToCsvUnionOfAllBeansFields() {
+  @Test public void shouldWriteToCsvUnionOfAllBeansFields_UsingEmptyStringForNulls() {
     def csv = new StringWriter()
     new CsvWriter().writeTo(csv, beans([a: "A"], [b: 4], [c: 3.0]))
 
@@ -36,19 +37,21 @@ A,,
 """
   }
 
-  @Test public void shouldBeAbleToWriteSubsetOfBeanFields() {
+  @Test public void shouldWriteBeanFieldsInParticularOrder() {
     def csv = new StringWriter()
-    new CsvWriter().usingFields(["a", "c"]).writeTo(csv, beans([a: "A", b: 2, c: 3.0], [a: "B", b: 4, c: 5.0]))
+    def beans = beans([a: "A", b: 2, c: 3.0], [a: "B", b: 4, c: 5.0])
+    new CsvWriter().usingOrder(["c", "a"]).writeTo(csv, beans)
 
-    assert csv.toString() == """a,c
-A,3.0
-B,5.0
+    assert csv.toString() == """c,a,b
+3.0,A,2
+5.0,B,4
 """
   }
 
-  @Test public void shouldBeanFieldsInParticularOrder() {
+  @Test public void shouldWriteBeanValuesUsingConverters() {
     def csv = new StringWriter()
-    new CsvWriter().usingOrder(["c", "a"]).writeTo(csv, beans([a: "A", b: 2, c: 3.0], [a: "B", b: 4, c: 5.0]))
+    def beans = beans([a: date(2011, 02, 17), b: 2, c: 3.0], [a: date(2010, 02, 20), b: 4, c: 5.0])
+//    new CsvWriter().usingConvertors(["c" : BeanType.DATE(), "a"]).writeTo(csv, beans)
 
     assert csv.toString() == """c,a,b
 3.0,A,2
