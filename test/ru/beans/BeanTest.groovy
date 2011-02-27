@@ -47,7 +47,7 @@ class BeanTest {
     def bean = new Bean()
     bean.a = 1.0
 
-    assert bean.toString() == "[a:1.0]"
+    assert bean.toString() == "bean[a:1.0]"
   }
 
   @Test public void shouldUseTypeWhenPropertyIsAssigned() {

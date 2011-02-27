@@ -24,6 +24,10 @@ class Bean {
     data.collect {new Bean(it)}
   }
 
+  static Bean bean() {
+    bean([:])
+  }
+
   static Bean bean(Map data) {
     new Bean(data)
   }
@@ -100,6 +104,6 @@ class Bean {
   }
 
   @Override public String toString() {
-    return this.@data.toMapString()
+    return "bean" + this.@data.toMapString()
   }
 }
