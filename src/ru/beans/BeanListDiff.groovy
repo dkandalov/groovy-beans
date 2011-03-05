@@ -7,6 +7,14 @@ package ru.beans
 class BeanListDiff {
   static BeanListDiff diff(Collection<Bean> beans1, Collection<Bean> beans2,
                            List keyFields, List fieldsToCompare) {
+    diffWithComparator(beans1, beans2, keyFields, fieldsToCompare) {
+      //noinspection GroovyAssignabilityCheck
+      BeanDiff.diff(bean1, bean2, fieldsToCompare)
+    }
+  }
+
+  static BeanListDiff diffWithComparator(Collection<Bean> beans1, Collection<Bean> beans2,
+                                         List keyFields, List fieldsToCompare, Closure comparator) {
     def groupedBeans1 = beans1.groupBy { bean ->
       keyFields.collect { field -> bean."${field}"}
     }
@@ -25,11 +33,12 @@ class BeanListDiff {
       if (beansForKey1.size() != beansForKey2.size()) throw new IllegalStateException() // TODO
       if (beansForKey1.size() > 1 || beansForKey2.size() > 1) throw new IllegalStateException()
 
-      //noinspection GroovyAssignabilityCheck
-      def beanDiff = BeanDiff.diff(beansForKey1[0], beansForKey2[0], fieldsToCompare)
-      if (!beanDiff.match()) {
-        diff << beanDiff
-      }
+      comparator.delegate = new Expando([beans1: beans1, beans2: beans2,
+              bean1: beansForKey1[0], bean2: beansForKey2[0],
+              keyFields: keyFields, fieldsToCompare: fieldsToCompare])
+
+      BeanDiff beanDiff = (BeanDiff) comparator.call()
+      if (!beanDiff.match()) diff << beanDiff
     }
 
     [left, diff, right] as BeanListDiff
@@ -45,7 +54,11 @@ class BeanListDiff {
     this.right = right
   }
 
-  public String toString() {
+  boolean match() {
+    diff.empty && left.empty && right.empty
+  }
+
+  @Override public String toString() {
     return "BeanListDiff{" +
             "left=" + left +
             ", diff=" + diff +

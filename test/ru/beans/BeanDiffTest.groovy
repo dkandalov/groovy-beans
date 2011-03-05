@@ -51,4 +51,21 @@ class BeanDiffTest {
 
     assert BeanDiff.diff(bean1, bean2, ["a", "b"]).match()
   }
+
+  @Test public void shouldCompareBeansUsingComparator() {
+    def doubleComparator = {
+      if (value1 instanceof Double && value2 instanceof Double)
+        Math.abs((double) value1 - value2) < 0.01
+      else
+        value1 == value2
+    }
+
+    def bean1 = bean([a: "A", b: 2.0d])
+    def bean2 = bean([a: "A", b: 2.01d])
+    def bean3 = bean([a: "A", b: 2.011d])
+
+    assert BeanDiff.diffWithComparator(bean1, bean2, doubleComparator).match()
+    assert BeanDiff.diffWithComparator(bean2, bean3, doubleComparator).match()
+    assert !BeanDiff.diffWithComparator(bean1, bean3, doubleComparator).match()
+  }
 }

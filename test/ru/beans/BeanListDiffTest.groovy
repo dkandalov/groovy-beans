@@ -11,7 +11,7 @@ import static ru.beans.Bean.bean
 class BeanListDiffTest {
   def shouldFail = new GroovyTestCase().&shouldFail
 
-  @Test public void exactlySameBeansShouldHaveEmptyDiff_EvenWhenOrderedDifferently() {
+  @Test public void exactlySameBeanListsShouldHaveEmptyDiff_EvenWhenOrderedDifferently() {
     def diff = BeanListDiff.diff(
             beans([a: "A", b: 1], [a: "AA", b: 2]),
             beans([a: "AA", b: 2], [a: "A", b: 1]),
@@ -22,7 +22,7 @@ class BeanListDiffTest {
     assert diff.right == []
   }
 
-  @Test public void differentBeansShouldHaveNotEmptyDiff() {
+  @Test public void differentBeanListsShouldHaveNotEmptyDiff() {
     def diff = BeanListDiff.diff(
             beans([a: "A", b: 1], [a: "AA", b: 2], [a: "AAA", b: 3]),
             beans([a: "AA", b: 222], [a: "AAA", b: 3], [a: "AAAA", b: 4], [a: "AAAAA", b: 5]),
@@ -33,7 +33,7 @@ class BeanListDiffTest {
     assert diff.diff == [[[], ["b"], [], bean([a: "AA", b: 2]), bean([a: "AA", b: 222])] as BeanDiff]
   }
 
-  @Test public void shouldThrowException_IfThereAreDifferentAmountOfBeansWithTheSameKey() {
+  @Test public void shouldThrowException_IfThereIsDifferentAmountOfBeansWithTheSameKey() {
     shouldFail {
       BeanListDiff.diff(
               beans([a: "A", b: 1], [a: "A", b: 2]), // two beans with the same key
@@ -41,5 +41,22 @@ class BeanListDiffTest {
               ["a"], ["b"]
       )
     }
+  }
+
+  @Test public void shouldCompareBeanListsUsingComparator() {
+    def customComparator = {
+      def someWeirdCondition = (bean2.key == "B" && beans1.find {it.value == 2})
+      if (someWeirdCondition) return BeanDiff.NO_DIFF
+
+      //noinspection GroovyAssignabilityCheck
+      BeanDiff.diff(bean1, bean2, fieldsToCompare)
+    }
+
+    def diff = BeanListDiff.diffWithComparator(
+            beans([key: "A", value: 1], [key: "B", value: 2]),
+            beans([key: "A", value: 1], [key: "B", value: 22]),
+            ["key"], ["value"], customComparator
+    )
+    assert diff.match()
   }
 }

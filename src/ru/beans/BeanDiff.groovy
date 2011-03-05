@@ -5,16 +5,41 @@ package ru.beans
  * Date: 22/2/11
  */
 class BeanDiff {
-  static def diff(Bean bean1, Bean bean2) {
-    def commonFields = bean1.fieldNames()
-    commonFields.retainAll(bean2.fieldNames())
+  static BeanDiff NO_DIFF = new BeanDiff([], [], [], null, null)
 
-    diff(bean1, bean2, commonFields)
+  static BeanDiff diff(Bean bean1, Bean bean2) {
+    diff(bean1, bean2, findCommonFields(bean1, bean2))
   }
 
-  static def diff(Bean bean1, Bean bean2, List fieldsToCompare) {
+  private static List findCommonFields(Bean bean1, Bean bean2) {
+    def commonFields = bean1.fieldNames()
+    commonFields.retainAll(bean2.fieldNames())
+    return commonFields
+  }
+
+  static BeanDiff diff(Bean bean1, Bean bean2, List fieldsToCompare) {
     def diff = fieldsToCompare.findAll { fieldName ->
       bean1."${fieldName}" != bean2."${fieldName}"
+    }
+
+    def left = bean1.fieldNames() - bean2.fieldNames()
+    def right = bean2.fieldNames() - bean1.fieldNames()
+
+    [left, diff, right, bean1, bean2] as BeanDiff
+  }
+
+  /**
+   * @param bean1
+   * @param bean2
+   * @param comparator closure which returns true if values are equals and false otherwise
+   * @return
+   */
+  static BeanDiff diffWithComparator(Bean bean1, Bean bean2, Closure comparator) {
+    def diff = findCommonFields(bean1, bean2).findAll { fieldName ->
+      def value1 = bean1."${fieldName}"
+      def value2 = bean2."${fieldName}"
+      comparator.delegate = new Expando([bean1: bean1, bean2: bean2, value1: value1, value2: value2])
+      !comparator.call()
     }
 
     def left = bean1.fieldNames() - bean2.fieldNames()
