@@ -23,11 +23,12 @@ class BeanListDiff {
       def beansForKey2 = new LinkedList(groupedBeans2.get(key))
 
       if (beansForKey1.size() != beansForKey2.size()) throw new IllegalStateException() // TODO
-      def differentFields = fieldsToCompare.findAll { field ->
-        beansForKey1[0]."${field}" != beansForKey2[0]."${field}"
-      }
-      if (!differentFields.empty) {
-        diff << new BeanDiff([], differentFields, [], beansForKey1[0], beansForKey2[0])
+      if (beansForKey1.size() > 1 || beansForKey2.size() > 1) throw new IllegalStateException()
+
+      //noinspection GroovyAssignabilityCheck
+      def beanDiff = BeanDiff.diff(beansForKey1[0], beansForKey2[0], fieldsToCompare)
+      if (!beanDiff.match()) {
+        diff << beanDiff
       }
     }
 

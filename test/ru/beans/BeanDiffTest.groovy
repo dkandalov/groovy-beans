@@ -44,4 +44,11 @@ class BeanDiffTest {
     assert BeanDiff.diff(bean2, bean1).left == []
     assert BeanDiff.diff(bean2, bean1).right == ["b"]
   }
+
+  @Test public void shouldCompareBeansUsingOnlySpecifiedFields() {
+    def bean1 = bean([a: "A", b: 2, c: 3])
+    def bean2 = bean([a: "A", b: 2, c: 4])
+
+    assert BeanDiff.diff(bean1, bean2, ["a", "b"]).match()
+  }
 }

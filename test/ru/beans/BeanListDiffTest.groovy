@@ -9,6 +9,8 @@ import static ru.beans.Bean.bean
  * Date: 22/2/11
  */
 class BeanListDiffTest {
+  def shouldFail = new GroovyTestCase().&shouldFail
+
   @Test public void exactlySameBeansShouldHaveEmptyDiff_EvenWhenOrderedDifferently() {
     def diff = BeanListDiff.diff(
             beans([a: "A", b: 1], [a: "AA", b: 2]),
@@ -28,10 +30,16 @@ class BeanListDiffTest {
     )
     assert diff.left == [bean([a: "A", b: 1])]
     assert diff.right == [bean([a: "AAAAA", b: 5]), bean([a: "AAAA", b: 4])]
-    assert diff.diff == [ [[], ["b"], [], bean([a: "AA", b: 2]), bean([a: "AA", b: 222])] as BeanDiff ]
+    assert diff.diff == [[[], ["b"], [], bean([a: "AA", b: 2]), bean([a: "AA", b: 222])] as BeanDiff]
   }
 
-  @Test public void whatShouldBeInDiffWhenThereAreDifferentAmountOfBeansWithTheSameKey() {
-
+  @Test public void shouldThrowException_IfThereAreDifferentAmountOfBeansWithTheSameKey() {
+    shouldFail {
+      BeanListDiff.diff(
+              beans([a: "A", b: 1], [a: "A", b: 2]), // two beans with the same key
+              beans([a: "A", b: 2]),
+              ["a"], ["b"]
+      )
+    }
   }
 }

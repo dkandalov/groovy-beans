@@ -8,7 +8,12 @@ class BeanDiff {
   static def diff(Bean bean1, Bean bean2) {
     def commonFields = bean1.fieldNames()
     commonFields.retainAll(bean2.fieldNames())
-    def diff = commonFields.findAll { fieldName ->
+
+    diff(bean1, bean2, commonFields)
+  }
+
+  static def diff(Bean bean1, Bean bean2, List fieldsToCompare) {
+    def diff = fieldsToCompare.findAll { fieldName ->
       bean1."${fieldName}" != bean2."${fieldName}"
     }
 
@@ -35,7 +40,7 @@ class BeanDiff {
     diff.empty && left.empty && right.empty
   }
 
-  public String toString() {
+  @Override public String toString() {
     return "BeanDiff{" +
             "diff=" + diff +
             ", left=" + left +
@@ -43,8 +48,7 @@ class BeanDiff {
             '}';
   }
 
-
-  boolean equals(o) {
+  @Override boolean equals(o) {
     if (this.is(o)) return true;
     if (getClass() != o.class) return false;
 
@@ -59,7 +63,7 @@ class BeanDiff {
     return true;
   }
 
-  int hashCode() {
+  @Override int hashCode() {
     int result;
     result = (left != null ? left.hashCode() : 0);
     result = 31 * result + (diff != null ? diff.hashCode() : 0);
