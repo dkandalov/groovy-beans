@@ -9,7 +9,7 @@ package ru.beans
  *
  *  + case sensitive/insensitive ("instrumentid" changes the same field as "InstrumentID")
  *
- *  - be able to diff beans
+ *  + be able to diff beans
  *  - be able to do sql-like operations on beans
  *
  * User: dima

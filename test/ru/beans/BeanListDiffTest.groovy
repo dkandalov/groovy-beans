@@ -1,10 +1,10 @@
 package ru.beans
 
 import org.junit.Test
-import static ru.beans.Bean.beans
 import static ru.beans.Bean.bean
+import static ru.beans.Bean.beans
 
-/**
+ /**
  * User: dima
  * Date: 22/2/11
  */
@@ -52,11 +52,15 @@ class BeanListDiffTest {
       BeanDiff.diff(bean1, bean2, fieldsToCompare)
     }
 
-    def diff = BeanListDiff.diffWithComparator(
+    assert BeanListDiff.diffWithComparator(
             beans([key: "A", value: 1], [key: "B", value: 2]),
             beans([key: "A", value: 1], [key: "B", value: 22]),
             ["key"], ["value"], customComparator
-    )
-    assert diff.match()
+    ).match()
+    assert !BeanListDiff.diff(
+            beans([key: "A", value: 1], [key: "B", value: 2]),
+            beans([key: "A", value: 1], [key: "B", value: 22]),
+            ["key"], ["value"]
+    ).match()
   }
 }

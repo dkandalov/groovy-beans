@@ -33,7 +33,8 @@ class BeanListDiff {
       if (beansForKey1.size() != beansForKey2.size()) throw new IllegalStateException() // TODO
       if (beansForKey1.size() > 1 || beansForKey2.size() > 1) throw new IllegalStateException()
 
-      comparator.delegate = new Expando([beans1: beans1, beans2: beans2,
+      comparator.delegate = new Expando([
+              beans1: beans1, beans2: beans2,
               bean1: beansForKey1[0], bean2: beansForKey2[0],
               keyFields: keyFields, fieldsToCompare: fieldsToCompare])
 

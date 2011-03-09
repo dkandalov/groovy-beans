@@ -11,7 +11,7 @@ class BeanType {
   private static def typeMapping = [:]
 
   static def STRING = new Convertor("STRING", {
-    put String.class, { it}
+    put String.class, { it }
     put Integer.class, { it.toString() }
     put BigDecimal.class, { it.toString() }
     put Double.class, { it.toString() }
