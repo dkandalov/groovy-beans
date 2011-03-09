@@ -4,11 +4,13 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 
 /**
+ * It was supposed to be something like type for bean fields.
+ * But didn't have to be more than a bunch of converters.
+ *
  * User: dima
  * Date: 13/2/11
  */
 class BeanType {
-  private static def typeMapping = [:]
 
   static def STRING = new Convertor("STRING", {
     put String.class, { it }
@@ -54,30 +56,21 @@ class BeanType {
 
   public static class Convertor {
     def convertTo
+    private Map<Class, Closure> typeMapping = [:]
 
-    Convertor(convertTo) {
-      this.convertTo = convertTo
-    }
-
-    Convertor(convertTo, Closure closure) {
+    Convertor(String convertTo, Closure closure) {
       this.convertTo = convertTo
       closure.delegate = this
       closure.call()
     }
 
     def put(Class srcType, Closure closure) {
-      if (!typeMapping.containsKey(srcType)) {
-        typeMapping.put(srcType, [:])
-      }
-      typeMapping[srcType].put(convertTo, closure)
+      typeMapping.put(srcType, closure)
     }
 
     def convert(def value) {
-      def mapping = typeMapping[value.getClass()]
-      if (mapping == null) throw new IllegalStateException("There is no mapping from type ${value.getClass()}. (Value: \"${value}\")")
-
-      def closure = mapping.get(convertTo)
-      if (closure == null) throw new IllegalStateException("There is no mapping to type ${convertTo} from ${value.class.simpleName} (value: \"${value}\")")
+      def closure = typeMapping[value.getClass()]
+      if (closure == null) throw new IllegalStateException("There is no mapping from type ${value.getClass()} to ${convertTo}. (Value: \"${value}\")")
 
       closure.call(value)
     }
