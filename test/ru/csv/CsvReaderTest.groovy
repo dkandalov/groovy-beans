@@ -3,6 +3,7 @@ package ru.csv
 import org.junit.Test
 import ru.beans.Bean
 import ru.beans.BeanType
+import static ru.beans.Bean.beans
 
 /**
  * User: dima
@@ -101,5 +102,33 @@ AA,4,5.0
             new Bean([a: "A", c: 3.0d]),
             new Bean([a: "AA", c: 5.0d])
     ]
+  }
+
+  @Test public void shouldUnEscapeQuotesAndCommas() {
+    def stringReader = new StringReader("""a,b,c
+1,"2,2",3
+"1,1",2,3
+1,"2,2","3,3"
+1,""2"",3
+""")
+    assert new CsvReader().read(stringReader) == beans(
+            [a: "1", b: "2,2", c: "3"],
+            [a: "1,1", b: "2", c: "3"],
+            [a: "1", b: "2,2", c: "3,3"],
+            [a: "1", b: "\"2\"", c: "3"]
+    )
+  }
+
+  @Test public void shouldSplitStringIntoValues() {
+    assert CsvReader.splitIntoValues("1,2,") == ["1", "2", ""]
+    assert CsvReader.splitIntoValues("1,2,3") == ["1", "2", "3"]
+
+    assert CsvReader.splitIntoValues("\"1,1\",2,3") == ["1,1", "2", "3"]
+    assert CsvReader.splitIntoValues("1,\"2,2\",3") == ["1", "2,2", "3"]
+    assert CsvReader.splitIntoValues("1,2,\"3,3\"") == ["1", "2", "3,3"]
+
+    assert CsvReader.splitIntoValues("0,q\"\"1\"\"q") == ["0", "q\"1\"q"]
+    assert CsvReader.splitIntoValues("q\"\"1\"\"q,2,3") == ["q\"1\"q", "2", "3"]
+    assert CsvReader.splitIntoValues("\"QuotesNcomma!,\"\"1\"\"q\",2,3") == ["QuotesNcomma!,\"1\"q", "2", "3"]
   }
 }

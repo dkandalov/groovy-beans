@@ -2,7 +2,7 @@ package ru.csv
 
 import ru.beans.Bean
 
-/**
+ /**
  * Reads {@link Bean}s from csv file.
  *
  * Should:
@@ -65,7 +65,7 @@ class CsvReader {
   }
 
   private def readBean(String s) {
-    def values = s.split(",", -1)
+    def values = splitIntoValues(s)
     if (values.size() < header.size()) throw new IllegalStateException("Too few values in line \"${s}\"")
     if (values.size() > header.size()) throw new IllegalStateException("Too many values in line \"${s}\"")
 
@@ -74,6 +74,11 @@ class CsvReader {
       map.put(it.key, values[it.value])
     }
     new Bean(map, beanType)
+  }
+
+  static def splitIntoValues(String s) {
+    (s =~ /"(.*?)",|"(.*)"$|(.*?),|(?<=,)(.*)$/)
+            .collect { it[1..4].find {it != null}.replaceAll("\"\"", "\"") }
   }
 
   private def readHeader(String s) {

@@ -52,11 +52,30 @@ A,,
   @Test public void shouldUseConvertors() {
     def csv = new StringWriter()
     def beans = beans([a: date(17, 02, 2011), b: 2, c: 3.0], [a: date(20, 02, 2011), b: 4, c: 5.0])
-    new CsvWriter().usingConvertors(["a" : BeanType.DATE_AS_STRING("dd/MM/yyyy")]).writeTo(csv, beans)
+    new CsvWriter().usingConvertors(["a" : BeanType.DATE_AS_STRING("dd/MM/yyyy")])
+            .writeTo(csv, beans)
 
     assert csv.toString() == """a,b,c
 17/02/2011,2,3.0
 20/02/2011,4,5.0
+"""
+  }
+
+  @Test public void shouldEscapeQuoteAndCommas() {
+    def csv = new StringWriter()
+    def beans = beans(
+            [a: "1", b: "2,2", c: "3"],
+            [a: "1,1", b: "2", c: "3"],
+            [a: "1", b: "2,2", c: "3,3"],
+            [a: "1", b: "\"2\"", c: "\"3\"3"]
+    )
+    new CsvWriter().writeTo(csv, beans)
+
+    assert csv.toString() == """a,b,c
+1,"2,2",3
+"1,1",2,3
+1,"2,2","3,3"
+1,""2"",""3""3
 """
   }
 }

@@ -60,8 +60,16 @@ class CsvWriter {
       if (convertors.containsKey(it)) {
         value = convertors.get(it).convert(value)
       }
-      (value == null ? "" : value) // I don't think anyone ever need "null" values in .csv file
+      asString(value)
     }.join(",") + "\n"
+  }
+
+  private def asString(value) {
+    if (value == null) return "" // I don't think anyone ever need "null" values in .csv file
+    value = value.toString()
+    value = value.replaceAll("\"", "\"\"")
+    if (value.contains(",")) value = "\"$value\""
+    value
   }
 
   private String headerAsString(List header) {
