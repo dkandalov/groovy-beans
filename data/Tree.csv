@@ -1,0 +1,43 @@
+0,,True,DAX 30,False
+1,,False,DJ 30 Industrials,True
+2,1,False,test,True
+3,,False,Watchlist,True
+4,,False,NASDAQ Composite,True
+5,,False,Yahoo! Germany Indices,True
+6,,True,TecDAX,False
+7,,False,NASDAQ 100 Technology,True
+8,,False,NASDAQ BioTech,True
+9,,False,NASDAQ Bank,True
+10,,False,NASDAQ Health Care,True
+11,,False,NASDAQ Other Finance,True
+12,,False,NASDAQ 100,True
+13,,False,Yahoo! Major World Indices,True
+14,,False,Yahoo! Major US Indices,True
+15,,False,AMEX,True
+16,,False,AMEX Composite,True
+17,,False,AMEX Internet,True
+18,,False,AMEX Networks,True
+19,,False,Major Market,True
+20,,True,DJ 65 Composite,False
+21,,False,DJ 20 Transportation,True
+22,,False,DJ 15 Utilities,True
+23,,False,NASDAQ 100 Ex-Tech,True
+24,,False,NASDAQ Financial 100,True
+25,,False,NASDAQ Computer,True
+26,,False,NASDAQ Industrial,True
+27,,False,NASDAQ Insurance,True
+28,,False,NASDAQ Telecom,True
+29,,False,NASDAQ Transportation,True
+30,,False,NASDAQ Dividend Achievers,True
+31,,False,NASDAQ Global Select Market,True
+32,,False,NASDAQ Global Market,True
+33,,False,NASDAQ Capital Market,True
+34,,False,NYSE,True
+35,,False,NYSE Composite,True
+36,,False,OTCBB,True
+37,,False,S&P 100,True
+38,,False,S&P 400 MidCap,True
+39,,True,S&P 500,False
+40,,False,S&P 600 SmallCap,True
+41,,False,S&P 1500 Composite,True
+42,,True,DJ Euro STOXX 50,False
