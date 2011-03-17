@@ -12,13 +12,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.codehaus.groovy:groovy:1.7.5" level="project" />
-    <orderEntry type="library" name="Maven: antlr:antlr:2.7.7" level="project" />
-    <orderEntry type="library" name="Maven: asm:asm:3.2" level="project" />
-    <orderEntry type="library" name="Maven: asm:asm-commons:3.2" level="project" />
-    <orderEntry type="library" name="Maven: asm:asm-tree:3.2" level="project" />
-    <orderEntry type="library" name="Maven: asm:asm-util:3.2" level="project" />
-    <orderEntry type="library" name="Maven: asm:asm-analysis:3.2" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.groovy:groovy-all:1.7.5" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.5" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.gmaven.runtime:gmaven-runtime-1.7:1.2" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.5.10" level="project" />

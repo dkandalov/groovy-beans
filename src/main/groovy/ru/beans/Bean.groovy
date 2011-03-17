@@ -8,6 +8,7 @@ package ru.beans
  *  - strict bean: only allows to read/write properties from "beanType"
  *
  *  + case sensitive/insensitive ("instrumentid" changes the same field as "InstrumentID")
+ *  - how should it affect equality/hashcode?
  *
  *  + be able to diff beans
  *  - be able to do sql-like operations on beans
@@ -20,7 +21,11 @@ class Bean {
   private def beanType = [:]
   private def fieldNamesMap = [:]
 
-  static List beans(Map... data) {
+  static Collection beans(Collection<Map> data) {
+    data.collect {new Bean(it)}
+  }
+
+  static Collection beans(Map... data) {
     data.collect {new Bean(it)}
   }
 
@@ -33,6 +38,10 @@ class Bean {
   }
 
   Bean() {
+  }
+
+  Bean(Bean bean) {
+    this(bean.data)
   }
 
   Bean(data) {
@@ -58,8 +67,19 @@ class Bean {
     this
   }
 
+  Bean mergeWith(Bean bean) {
+    def result = new Bean()
+    result.@data.putAll(this.@data)
+    result.@data.putAll(bean.@data)
+    result
+  }
+
   List fieldNames() {
     fieldNamesMap.values().toList()
+  }
+
+  List fieldValues(List<String> fieldNames) {
+    fieldNames.collect {getProperty(it)}
   }
 
   @Override void setProperty(String propertyName, Object newValue) {

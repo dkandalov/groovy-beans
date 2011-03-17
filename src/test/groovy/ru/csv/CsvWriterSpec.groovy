@@ -9,7 +9,7 @@ import static ru.beans.Bean.beans
  * User: dima
  * Date: 15/2/11
  */
-class CsvWriterTest {
+class CsvWriterSpec {
 
   @Test public void shouldWriteEmptyCsvForEmptyInput() {
     def csv = new StringWriter()

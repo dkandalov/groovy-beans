@@ -7,7 +7,7 @@ import static ru.beans.Bean.bean
  * User: dima
  * Date: 22/2/11
  */
-class BeanDiffTest {
+class BeanDiffSpec {
   @Test public void emptyBeansShouldAlwaysMatch() {
     def bean1 = bean()
     def bean2 = bean()

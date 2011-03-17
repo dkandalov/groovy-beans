@@ -9,7 +9,7 @@ import static ru.beans.Bean.beans
  * User: dima
  * Date: 9/2/11
  */
-class CsvReaderTest {
+class CsvReaderSpec {
   def shouldFail = new GroovyTestCase().&shouldFail
 
   @Test public void shouldReadBeansFromCorrectCsvText() {

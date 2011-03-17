@@ -8,7 +8,7 @@ import static ru.beans.Bean.beans
  * User: dima
  * Date: 22/2/11
  */
-class BeanListDiffTest {
+class BeanListDiffSpec {
   def shouldFail = new GroovyTestCase().&shouldFail
 
   @Test public void exactlySameBeanListsShouldHaveEmptyDiff_EvenWhenOrderedDifferently() {

@@ -8,7 +8,7 @@ import static ru.Util.date
  * User: dima
  * Date: 13/2/11
  */
-class BeanTypeTest {
+class BeanTypeSpec {
   def shouldFail = new GroovyTestCase().&shouldFail
 
   @Test public void shouldConvertIntoDate() {

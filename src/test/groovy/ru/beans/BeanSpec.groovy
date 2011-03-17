@@ -7,7 +7,7 @@ import static ru.beans.Bean.bean
  * User: dima
  * Date: 8/2/11
  */
-class BeanTest {
+class BeanSpec {
   @Test public void shouldStoreValuesAssignedToNotExistingProperties() {
     def bean = new Bean()
     bean.a = 123
@@ -81,6 +81,25 @@ class BeanTest {
   @Test public void shouldReturnBeanFields() {
     def bean = bean([instrumentId: "A", sIZe: 123])
     assert bean.fieldNames() == ["instrumentId", "sIZe"]
+  }
+
+  @Test public void shouldReturnBeanValuesForSpecifiedFields() {
+    def bean = bean([field1: 1, field2: 2, field3: 3])
+    assert bean.fieldValues(["field2", "field3"]) == [2, 3]
+  }
+
+  @Test public void shouldMergeWithBean_WithoutChangingExistingState() {
+    def bean1 = bean([a: 1, b: 2])
+    def bean2 = bean([c: 3])
+    def bean3 = bean([a: 1, b: 2, c: 3])
+
+    assert bean1.mergeWith(bean2) == bean3
+    assert bean1.c == null
+    assert bean2.a == null
+  }
+
+  @Test public void shouldMergeWithBean_UsingAccumulationClosure() {
+    fail // TODO stopped here
   }
 
   @Test public void shouldBeCaseInsensitive() {
