@@ -24,8 +24,16 @@ class BeanTable {
     accumulationClosure = closure
   }
 
+  def select(Closure closure) {
+    beans.values().findAll {closure(it)}
+  }
+
   def selectAll() {
     beans.values().toList()
+  }
+
+  def delete(Closure closure) {
+    beans.entrySet().removeAll {closure(it.value)}
   }
 
   def insert(Collection<Bean> beans) {
@@ -44,7 +52,10 @@ class BeanTable {
   def join(Collection<Bean> beansToJoin) {
     beansToJoin.collect {
       def bean = beans.get(it.fieldValues(keys))
-      bean?.mergeWith(it)
+      if (accumulationClosure != null)
+        bean?.mergeWith(it, accumulationClosure)
+      else
+        bean?.mergeWith(it)
     }.findAll {it != null}
   }
 }

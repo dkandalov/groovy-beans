@@ -3,7 +3,7 @@ package ru.beans
 import org.junit.Test
 import static ru.beans.Bean.bean
 
-/**
+ /**
  * User: dima
  * Date: 8/2/11
  */
@@ -88,20 +88,6 @@ class BeanSpec {
     assert bean.fieldValues(["field2", "field3"]) == [2, 3]
   }
 
-  @Test public void shouldMergeWithBean_WithoutChangingExistingState() {
-    def bean1 = bean([a: 1, b: 2])
-    def bean2 = bean([c: 3])
-    def bean3 = bean([a: 1, b: 2, c: 3])
-
-    assert bean1.mergeWith(bean2) == bean3
-    assert bean1.c == null
-    assert bean2.a == null
-  }
-
-  @Test public void shouldMergeWithBean_UsingAccumulationClosure() {
-    fail // TODO stopped here
-  }
-
   @Test public void shouldBeCaseInsensitive() {
     def bean = bean([instrumentId: "A"])
     bean.instrumentId = 123
@@ -109,5 +95,25 @@ class BeanSpec {
 
     bean.instrumentid = 234
     assert bean.instrumentid == 234
+  }
+
+  @Test public void shouldMergeWithAnotherBean_WithoutChangingExistingBeans() {
+    def bean1 = bean([a: 1, b: 2])
+    def bean2 = bean([c: 3])
+
+    assert bean1.mergeWith(bean2) == bean([a: 1, b: 2, c: 3])
+    assert bean1.c == null
+    assert bean2.a == null
+  }
+
+  @Test public void shouldMergeWithAnotherBean_UsingAccumulationClosure() {
+    def bean1 = bean([a: 1, b: 2])
+    def bean2 = bean([a: 1, b: 3])
+
+    def mergedBean = bean1.mergeWith(bean2) { b1, b2 ->
+      b1.a += b2.a
+      b1.b *= b2.b
+    }
+    assert mergedBean == bean([a: 2, b: 6])
   }
 }

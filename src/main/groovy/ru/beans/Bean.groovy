@@ -68,10 +68,16 @@ class Bean {
   }
 
   Bean mergeWith(Bean bean) {
-    def result = new Bean()
-    result.@data.putAll(this.@data)
-    result.@data.putAll(bean.@data)
-    result
+    def newBean = new Bean()
+    newBean.@data.putAll(this.@data)
+    newBean.@data.putAll(bean.@data)
+    newBean
+  }
+
+  Bean mergeWith(Bean bean, Closure accumulationClosure) {
+    def newBean = new Bean(this.@data)
+    accumulationClosure(newBean, bean)
+    newBean
   }
 
   List fieldNames() {
