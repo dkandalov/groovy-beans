@@ -41,7 +41,7 @@ A,,
   @Test public void shouldWriteBeanFieldsInParticularOrder() {
     def csv = new StringWriter()
     def beans = beans([a: "A", b: 2, c: 3.0], [a: "B", b: 4, c: 5.0])
-    new CsvWriter().usingOrder(["c", "a"]).writeTo(csv, beans)
+    new CsvWriter().usingFieldOrder(["c", "a"]).writeTo(csv, beans)
 
     assert csv.toString() == """c,a,b
 3.0,A,2

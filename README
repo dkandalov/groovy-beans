@@ -9,7 +9,12 @@ TODOs (see also javadocs for classes):
  + csv write/read
  - simple serialize/deserialize for beans
  - bean stream matching
+ - copy beans to clipboard (so that they could be copied into excel)
 
  - simple jtable for beans
+    - search
+    - highlight
  - simple graphs for beans
 
+ - next filename generator
+ - open in default editor action (like notpad or excel)

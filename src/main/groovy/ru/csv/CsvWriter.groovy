@@ -30,7 +30,7 @@ class CsvWriter {
   private def fieldsOrder = []
   private Map convertors = [:]
 
-  CsvWriter usingOrder(List<String> fieldsOrder) {
+  CsvWriter usingFieldOrder(List<String> fieldsOrder) {
     this.fieldsOrder = fieldsOrder
     this
   }
