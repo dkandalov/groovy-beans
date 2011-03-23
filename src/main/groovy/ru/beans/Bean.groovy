@@ -74,12 +74,16 @@ class Bean {
     result
   }
 
-  List fieldNames() {
+  List<String> fieldNames() {
     fieldNamesMap.values().toList()
   }
 
   List fieldValues(List<String> fieldNames) {
     fieldNames.collect {getProperty(it)}
+  }
+
+  def eachValue(Closure closure) {
+    fieldNames().each { closure.call(it, getProperty(it)) }
   }
 
   @Override void setProperty(String propertyName, Object newValue) {

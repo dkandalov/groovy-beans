@@ -88,6 +88,15 @@ class BeanSpec {
     assert bean.fieldValues(["field2", "field3"]) == [2, 3]
   }
 
+  @Test public void shouldIterateOverFieldValuesAndNames() {
+    def bean = bean([field1: 1, field2: 2, field3: 3])
+    def actual = [:]
+    bean.eachValue { value, name ->
+      actual.put(value, name)
+    }
+    assert actual == [field1: 1, field2: 2, field3: 3]
+  }
+
   @Test public void shouldMergeWithBean_WithoutChangingExistingState() {
     def bean1 = bean([a: 1, b: 2])
     def bean2 = bean([c: 3])
