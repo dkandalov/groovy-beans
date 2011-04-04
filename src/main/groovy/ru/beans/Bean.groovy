@@ -63,17 +63,14 @@ class Bean {
   }
 
   Bean mergeWith(Bean that, Closure accumulationClosure = null) {
-    def newBean = new Bean()
-
-    (this.fieldNames() - that.fieldNames()).each { newBean.@data.put(it, this.getProperty((String) it)) }
-    (that.fieldNames() - this.fieldNames()).each { newBean.@data.put(it, that.getProperty((String) it)) }
+    (that.fieldNames() - this.fieldNames()).each { this.@data.put(it, that.getProperty((String) it)) }
 
     def commonFields = this.fieldNames().intersect(that.fieldNames())
-    commonFields.each { newBean.@data.put(it, this.getProperty((String) it)) }
+    commonFields.each { this.@data.put(it, this.getProperty((String) it)) }
 
-    if (accumulationClosure != null)  accumulationClosure(newBean, that)
+    if (accumulationClosure != null)  accumulationClosure(this, that)
 
-    newBean
+    this
   }
 
   List fieldNames() {

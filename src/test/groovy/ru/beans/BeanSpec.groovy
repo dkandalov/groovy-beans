@@ -88,12 +88,12 @@ class BeanSpec {
     assert bean.fieldValuesFor(["field2", "field3"]) == [2, 3]
   }
 
-  @Test void shouldMergeWithAnotherBean_WithoutChangingExistingBeans() {
+  @Test void mergingShouldChangeLeftSideBean() {
     def bean1 = bean([a: 1, b: 2])
     def bean2 = bean([c: 3])
 
     assert bean1.mergeWith(bean2) == bean([a: 1, b: 2, c: 3])
-    assert bean1.c == null
+    assert bean1.c == 3
     assert bean2.a == null
   }
 

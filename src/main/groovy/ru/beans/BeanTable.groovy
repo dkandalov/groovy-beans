@@ -7,7 +7,10 @@ package ru.beans
 class BeanTable {
   private Map<List, Bean> beans
   private List<String> keys
+
   private Closure accumulationClosure
+  private Closure whenMissingInThisTable
+  private Closure whenMissingInThatTable
 
   BeanTable(def keys) {
     this(keys, [])
@@ -24,6 +27,14 @@ class BeanTable {
     accumulationClosure = closure
   }
 
+  def whenMissingInThisTable(Closure closure) {
+    whenMissingInThisTable = closure
+  }
+
+  def whenMissingInThatTable(Closure closure) {
+    whenMissingInThatTable = closure
+  }
+
   def select(Closure closure) {
     beans.values().findAll {closure(it)}
   }
@@ -38,24 +49,29 @@ class BeanTable {
 
   def insert(Collection<Bean> beans) {
     beans.each { insert(it) }
+    this
   }
 
-  def insert(Bean bean) {
-    def key = bean.fieldValuesFor(keys)
-    if (accumulationClosure != null && beans.containsKey(key)) {
-      accumulationClosure(beans.get(key), bean)
+  def insert(Bean newBean) {
+    def key = newBean.fieldValuesFor(keys)
+    def oldBean = beans.get(key)
+
+    if (oldBean != null && accumulationClosure != null) {
+      oldBean.mergeWith(newBean, accumulationClosure)
     } else {
-      beans.put(key, bean)
+      beans.put(key, newBean)
     }
+
+    this
   }
 
   def innerJoin(Collection<Bean> beansToJoin) {
-    beansToJoin.collect {
-      def bean = beans.get(it.fieldValuesFor(keys))
+    beansToJoin.collect { thatBean ->
+      def thisBean = beans.get(thatBean.fieldValuesFor(keys))
       if (accumulationClosure != null)
-        bean?.mergeWith(it, accumulationClosure)
+        thisBean?.mergeWith(thatBean, accumulationClosure)
       else
-        bean?.mergeWith(it)
+        thisBean?.mergeWith(thatBean)
     }.findAll {it != null}
   }
 }

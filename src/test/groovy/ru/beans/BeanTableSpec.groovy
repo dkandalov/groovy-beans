@@ -9,7 +9,7 @@ import static ru.beans.Bean.beans
  * Date: 16/3/11
  */
 class BeanTableSpec {
-  @Test public void shouldInsertValues() {
+  @Test void shouldInsertValues() {
     def table = new BeanTable(["key"])
     table.insert(bean([key: 1, value: "a"]))
     table.insert(beans([key: 2, value: "b"], [key: 3, value: "c"]))
@@ -17,7 +17,7 @@ class BeanTableSpec {
     assert table.selectAll() == beans([key: 1, value: "a"], [key: 2, value: "b"], [key: 3, value: "c"])
   }
 
-  @Test public void shouldReplaceExistingBeansWithNewValues_IfKeysAreTheSame() {
+  @Test void shouldReplaceExistingBeansWithNewValues_IfKeysAreTheSame() {
     def table = new BeanTable(["key"])
     table.insert(bean([key: 1, value: "a"]))
     table.insert(bean([key: 2, value: "b"]))
@@ -26,18 +26,21 @@ class BeanTableSpec {
     assert table.selectAll() == beans([key: 1, value: "A"], [key: 2, value: "b"])
   }
 
-  @Test public void shouldAccumulateBeans_IfTableHasAccumulationClosure() {
+  @Test void shouldAccumulateBeans_IfTableHasAccumulationClosure() {
     def table = new BeanTable(["key"])
     table.whenBeanExists { oldBean, newBean -> oldBean.value += newBean.value }
 
     table.insert(bean([key: "a", value: 1]))
-    table.insert(bean([key: "a", value: 2]))
-    table.insert(bean([key: "b", value: 2]))
+    table.insert(bean([key: "a", value: 2, value2: "-"]))
+    table.insert(bean([key: "b", value: 2, value2: "-"]))
 
-    assert table.selectAll() == beans([key: "a", value: 3], [key: "b", value: 2])
+    assert table.selectAll() == beans(
+        [key: "a", value: 3, value2: "-"],
+        [key: "b", value: 2, value2: "-"]
+    )
   }
 
-  @Test public void shouldDoInnerJoin() {
+  @Test void shouldDoInnerJoin() {
     def beans1 = (1..4).collect {bean(key1: it, key2: it + 1, value: "a" * it)}
     def beans2 = (2..3).collect {bean(key1: it, key2: it + 1, value2: "b" * it)}
     def table = new BeanTable(["key1", "key2"], beans1)
@@ -48,7 +51,7 @@ class BeanTableSpec {
     )
   }
 
-  @Test public void shouldDoInnerJoin_WithAccumulation() {
+  @Test void shouldDoInnerJoin_WithAccumulation() {
     def beans1 = (1..5).collect {bean(key1: it, key2: it + 1, value: "a" * it)}
     def beans2 = (2..3).collect {bean(key1: it, key2: it + 1, value: "b" * it, value2: "c")}
     def table = new BeanTable(["key1", "key2"], beans1)
@@ -62,14 +65,18 @@ class BeanTableSpec {
     )
   }
 
-  @Test public void shouldSelectValues() {
+  @Test void shouldDoInnerJoin_UsingCallbacksForMissingValues() {
+    fail // TODO
+  }
+
+  @Test void shouldSelectValues() {
     def table = new BeanTable(["key"])
     table.insert(beans([key: 1, value: "a"], [key: 2, value: "b"], [key: 3, value: "c"]))
 
     assert table.select {it.key > 2} == beans([key: 3, value: "c"])
   }
 
-  @Test public void shouldDeleteValues() {
+  @Test void shouldDeleteValues() {
     def table = new BeanTable(["key"])
     table.insert(beans([key: 1, value: "a"], [key: 2, value: "b"], [key: 3, value: "c"]))
     table.delete {it.key >= 2}

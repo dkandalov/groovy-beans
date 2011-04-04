@@ -9,7 +9,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver
  */
 class Storage {
   private static final String STORAGE = ".storage"
-  static def xstream = new XStream(new DomDriver())
+  static def xStream = new XStream(new DomDriver())
 
   static def load(String id, Closure closure) {
     def result = load(id)
@@ -24,11 +24,11 @@ class Storage {
     def xml = readXml(id)
     if (xml == null) return null
 
-    xstream.fromXML(xml)
+    xStream.fromXML(xml)
   }
 
   static def save(String id, def object) {
-    def xml = xstream.toXML(object)
+    def xml = xStream.toXML(object)
     saveXml(id, xml)
   }
 
