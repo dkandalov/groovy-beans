@@ -42,7 +42,7 @@ class BeanTableSpec {
     def beans2 = (2..3).collect {bean(key1: it, key2: it + 1, value2: "b" * it)}
     def table = new BeanTable(["key1", "key2"], beans1)
 
-    assert table.join(beans2) == beans(
+    assert table.innerJoin(beans2) == beans(
         [key1: 2, key2: 3, value: "aa", value2: "bb"],
         [key1: 3, key2: 4, value: "aaa", value2: "bbb"],
     )
@@ -50,14 +50,15 @@ class BeanTableSpec {
 
   @Test public void shouldDoInnerJoin_WithAccumulation() {
     def beans1 = (1..5).collect {bean(key1: it, key2: it + 1, value: "a" * it)}
-    def beans2 = (2..3).collect {bean(key1: it, key2: it + 1, value: "b" * it)}
+    def beans2 = (2..3).collect {bean(key1: it, key2: it + 1, value: "b" * it, value2: "c")}
     def table = new BeanTable(["key1", "key2"], beans1)
     table.whenBeanExists { oldBean, newBean ->
       oldBean.value += newBean.value
     }
 
-    assert table.join(beans2) == beans(
-        [key1: 2, key2: 3, value: "aabb"], [key1: 3, key2: 4, value: "aaabbb"]
+    assert table.innerJoin(beans2) == beans(
+        [key1: 2, key2: 3, value: "aabb", value2: "c"],
+        [key1: 3, key2: 4, value: "aaabbb", value2: "c"]
     )
   }
 

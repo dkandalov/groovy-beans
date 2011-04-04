@@ -37,11 +37,11 @@ class BeanTable {
   }
 
   def insert(Collection<Bean> beans) {
-    beans.each {insert(it)}
+    beans.each { insert(it) }
   }
 
   def insert(Bean bean) {
-    def key = bean.fieldValues(keys)
+    def key = bean.fieldValuesFor(keys)
     if (accumulationClosure != null && beans.containsKey(key)) {
       accumulationClosure(beans.get(key), bean)
     } else {
@@ -49,9 +49,9 @@ class BeanTable {
     }
   }
 
-  def join(Collection<Bean> beansToJoin) {
+  def innerJoin(Collection<Bean> beansToJoin) {
     beansToJoin.collect {
-      def bean = beans.get(it.fieldValues(keys))
+      def bean = beans.get(it.fieldValuesFor(keys))
       if (accumulationClosure != null)
         bean?.mergeWith(it, accumulationClosure)
       else
