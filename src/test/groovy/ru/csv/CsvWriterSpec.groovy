@@ -11,7 +11,7 @@ import static ru.beans.Bean.beans
  */
 class CsvWriterSpec {
 
-  @Test public void shouldWriteEmptyCsvForEmptyInput() {
+  @Test public void shouldCreateEmptyCsvForEmptyInput() {
     def csv = new StringWriter()
     new CsvWriter().writeTo(csv, [])
     assert csv.toString() == ""
@@ -38,7 +38,7 @@ A,,
 """
   }
 
-  @Test public void shouldWriteBeanFieldsInParticularOrder() {
+  @Test public void shouldWriteBeanFieldsInSpecifiedOrder() {
     def csv = new StringWriter()
     def beans = beans([a: "A", b: 2, c: 3.0], [a: "B", b: 4, c: 5.0])
     new CsvWriter().usingOrder(["c", "a"]).writeTo(csv, beans)
@@ -46,6 +46,17 @@ A,,
     assert csv.toString() == """c,a,b
 3.0,A,2
 5.0,B,4
+"""
+  }
+
+  @Test public void shouldWriteBeansUsingSpecifiedHeader() {
+    def csv = new StringWriter()
+    def beans = beans([a: "A", b: 2, c: 3.0], [a: "B", b: 4, c: 5.0])
+    new CsvWriter().withHeader(["c", "d", "a"]).writeTo(csv, beans) // "d" column doesn't exist but should be used anyway
+
+    assert csv.toString() == """c,d,a
+3.0,,A
+5.0,,B
 """
   }
 

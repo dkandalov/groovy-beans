@@ -26,9 +26,16 @@ import ru.beans.Bean
  * Date: 15/2/11
  */
 class CsvWriter {
-  private def header = []
-  private def fieldsOrder = []
+  private List header = []
+  private List fieldsOrder = []
   private Map convertors = [:]
+  private List enforcedHeader = []
+
+  CsvWriter withHeader(List<String> enforcedHeader)
+  {
+    this.enforcedHeader = enforcedHeader
+    this
+  }
 
   CsvWriter usingOrder(List<String> fieldsOrder) {
     this.fieldsOrder = fieldsOrder
@@ -40,13 +47,18 @@ class CsvWriter {
     this
   }
 
-  def writeTo(String fileName, List<Bean> beans) {
+  def writeTo(String fileName, Collection<Bean> beans) {
     writeTo(new FileWriter(fileName), beans)
   }
 
-  def writeTo(Writer writer, List<Bean> beans) {
+  def writeTo(Writer writer, Collection<Bean> beans) {
     if (beans.empty) return
-    header = getHeaderFrom(beans)
+    if (enforcedHeader.empty) {
+      header = getHeaderFrom(beans)
+      header = fieldsOrder + (header - fieldsOrder)
+    } else {
+      header = enforcedHeader
+    }
 
     writer.withWriter { w ->
       w.append(headerAsString(header))
@@ -76,12 +88,11 @@ class CsvWriter {
     return header.join(",") + "\n"
   }
 
-  private List getHeaderFrom(List beans) {
-    def header = new LinkedHashSet()
+  private List getHeaderFrom(Collection beans) {
+    def header = new LinkedHashSet() // this is to make "order" in which header composed consistent
     beans.each { bean ->
       bean.fieldNames().each { header.add(it) }
     }.toList()
-
-    fieldsOrder + (header - fieldsOrder)
+    header.toList()
   }
 }
