@@ -73,6 +73,10 @@ class Bean {
     this
   }
 
+  def eachValue(Closure closure) {  // TODO use delegation to data map?
+    data.each { closure.call(it.key, it.value) }
+  }
+
   List fieldNames() {
     data.keySet().toList()
   }

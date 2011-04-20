@@ -1,7 +1,5 @@
 package ru.csv
 
-import ru.beans.Bean
-
  /**
  * Reads {@link ru.beans.Bean}s from csv file.
  *
@@ -47,11 +45,11 @@ class CsvWriter {
     this
   }
 
-  def writeTo(String fileName, Collection<Bean> beans) {
+  def writeTo(String fileName, def beans) {
     writeTo(new FileWriter(fileName), beans)
   }
 
-  def writeTo(Writer writer, Collection<Bean> beans) {
+  def writeTo(Writer writer, def beans) {
     if (beans.empty) return
     if (enforcedHeader.empty) {
       header = getHeaderFrom(beans)
