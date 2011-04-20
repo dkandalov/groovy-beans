@@ -7,7 +7,7 @@ TODOs (see also javadocs for classes):
  - bean window-based read
  +- bean diff
  + csv write/read
- - simple serialize/deserialize for beans
+ + simple serialize/deserialize for beans (storage)
  - bean stream matching
  - copy beans to clipboard (so that they could be copied into excel)
 
