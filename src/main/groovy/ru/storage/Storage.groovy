@@ -7,11 +7,17 @@ import com.thoughtworks.xstream.io.xml.DomDriver
  * User: dima
  * Date: 19/3/11
  */
-class Storage {
+class Storage { // TODO document
   private static final String STORAGE = ".storage"
   static def xStream = new XStream(new DomDriver())
 
-  static def load(String id, Closure closure) {
+  static def cachedReload(String id, Closure closure) {
+    def result = closure.call()
+    save(id, result)
+    result
+  }
+
+  static def cached(String id, Closure closure) {
     def result = load(id)
     if (result == null) {
       result = closure.call()

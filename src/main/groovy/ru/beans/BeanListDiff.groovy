@@ -1,10 +1,13 @@
 package ru.beans
 
 /**
+ * // TODO document
+ *
  * User: dima
  * Date: 22/2/11
  */
-class BeanListDiff {
+class BeanListDiff { // TODO have pretty printer for diffs
+  // TODO have option to compare the rest of the fields
   static BeanListDiff diff(Collection<Bean> beans1, Collection<Bean> beans2,
                            List keyFields, List fieldsToCompare) {
     diffWithComparator(beans1, beans2, keyFields, fieldsToCompare) {
@@ -31,7 +34,8 @@ class BeanListDiff {
       def beansForKey2 = new LinkedList(groupedBeans2.get(key))
 
       if (beansForKey1.size() != beansForKey2.size()) throw new IllegalStateException() // TODO
-      if (beansForKey1.size() > 1 || beansForKey2.size() > 1) throw new IllegalStateException()
+      if (beansForKey1.size() > 1) throw new IllegalStateException("There are several beans for key fields. Beans: ${beansForKey1}") // TODO provide a special case to exclude elements with similar keys?
+      if (beansForKey2.size() > 1) throw new IllegalStateException("There are several beans for key fields. Beans: ${beansForKey2}")
 
       comparator.delegate = new Expando([
               beans1: beans1, beans2: beans2,
@@ -45,8 +49,10 @@ class BeanListDiff {
     [left, diff, right] as BeanListDiff
   }
 
+  // TODO I want to have more type information in client code
+  // TODO  rename diff to "beanDiff" or something like that
   def left
-  def diff
+  Collection<BeanDiff> diff
   def right
 
   BeanListDiff(left, diff, right) {
