@@ -1,5 +1,10 @@
 package ru
 
+import java.util.concurrent.Callable
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
+import java.util.concurrent.ThreadFactory
+
 /**
  * User: dima
  * Date: 13/2/11
@@ -17,5 +22,32 @@ class Util {
       set(Calendar.MILLISECOND, 0)
     }
     calendar.getTime()
+  }
+
+  static <T> Future<T> async(T defaultValue = null, Closure closure) {
+    def executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory())
+    executor.submit(new Callable() {
+      @Override
+      Object call() {
+        try
+        {
+          closure.call()
+        }
+        catch (Exception e)
+        {
+          e.printStackTrace()
+          defaultValue
+        }
+      }
+    })
+  }
+
+  public static class DaemonThreadFactory implements ThreadFactory {
+    @Override
+    Thread newThread(Runnable r) {
+      def t = new Thread(r)
+      t.daemon = true
+      return t
+    }
   }
 }
