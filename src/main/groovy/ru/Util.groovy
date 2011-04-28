@@ -24,6 +24,19 @@ class Util {
     calendar.getTime()
   }
 
+  static Collection extractFrom(Collection collection, Closure shouldExtract) { // TODO add to GDK more dynamically
+    def result = []
+    def i = collection.iterator()
+    while (i.hasNext()) {
+      def next = i.next()
+      if (shouldExtract(next)) {
+        result << next
+        i.remove()
+      }
+    }
+    result
+  }
+
   static <T> Future<T> async(T defaultValue = null, Closure closure) {
     def executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory())
     executor.submit(new Callable() {

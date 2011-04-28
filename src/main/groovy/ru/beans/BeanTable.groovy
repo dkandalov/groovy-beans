@@ -11,6 +11,7 @@ class BeanTable {
   private Closure accumulationClosure
   private Closure whenMissingInThisTable
   private Closure whenMissingInThatTable
+  private Closure insertionClosure
 
   BeanTable(def keys) {
     this(keys, [])
@@ -20,7 +21,11 @@ class BeanTable {
     this.beans = new LinkedHashMap()
     this.keys = keys
 
-    insert(beans)
+    insertAll(beans)
+  }
+
+  def whenBeanDoesntExist(Closure closure) {
+    insertionClosure = closure
   }
 
   def whenBeanExists(Closure closure) {
@@ -39,7 +44,7 @@ class BeanTable {
     beans.values().findAll {closure(it)}
   }
 
-  def selectAll() {
+  Collection<Bean> selectAll() {
     beans.values().toList()
   }
 
@@ -47,7 +52,7 @@ class BeanTable {
     beans.entrySet().removeAll {closure(it.value)}
   }
 
-  def insert(Collection<Bean> beans) {
+  def insertAll(Collection<Bean> beans) {
     beans.each { insert(it) }
     this
   }
@@ -56,10 +61,18 @@ class BeanTable {
     def key = newBean.fieldValuesFor(keys)
     def oldBean = beans.get(key)
 
-    if (oldBean != null && accumulationClosure != null) {
-      oldBean.mergeWith(newBean, accumulationClosure)
+    if (oldBean != null) {
+      if (accumulationClosure != null)
+        oldBean.mergeWith(newBean, accumulationClosure)
+      else
+        beans.put(key, newBean)
     } else {
-      beans.put(key, newBean)
+      if (insertionClosure != null) {
+        insertionClosure(newBean)
+        beans.put(key, newBean)
+      } else {
+        beans.put(key, newBean)
+      }
     }
 
     this
@@ -73,5 +86,18 @@ class BeanTable {
       else
         thisBean?.mergeWith(thatBean)
     }.findAll {it != null}
+  }
+
+  def innerJoin(Collection<Bean> beansToJoin, Closure canJoin) {
+    beansToJoin.collect { thatBean ->
+      beans.values().collect { thisBean ->
+        if (canJoin(thisBean, thatBean)) {
+          if (accumulationClosure != null)
+            thisBean?.mergeWith(thatBean, accumulationClosure)
+          else
+            thisBean?.mergeWith(thatBean)
+        }
+      }
+    }.flatten().findAll { it != null }
   }
 }
