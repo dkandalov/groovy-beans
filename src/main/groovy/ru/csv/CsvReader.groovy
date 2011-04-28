@@ -39,11 +39,15 @@ class CsvReader {
     this
   }
 
-  List read(String fileName) {
+  List<Bean> readString(String csvString) {
+    read(new StringReader(csvString))
+  }
+
+  List<Bean> read(String fileName) {
     read(new FileReader(fileName))
   }
 
-  List read(Reader inputReader) {
+  List<Bean> read(Reader inputReader) {
     def result = []
     readEachLine(inputReader) { result << it }
     result
