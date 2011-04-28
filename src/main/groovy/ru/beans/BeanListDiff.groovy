@@ -8,8 +8,12 @@ package ru.beans
  */
 class BeanListDiff { // TODO have pretty printer for diffs
   // TODO have option to compare the rest of the fields
-  static BeanListDiff diff(Collection<Bean> beans1, Collection<Bean> beans2,
-                           List keyFields, List fieldsToCompare) {
+  static BeanListDiff diff(Collection<Bean> beans1, Collection<Bean> beans2, List keyFields) {
+    def fieldsToCompare = beans1[0].fieldNames() - keyFields
+    diff(beans1, beans2, keyFields, fieldsToCompare)
+  }
+
+  static BeanListDiff diff(Collection<Bean> beans1, Collection<Bean> beans2, List keyFields, List fieldsToCompare) {
     diffWithComparator(beans1, beans2, keyFields, fieldsToCompare) {
       //noinspection GroovyAssignabilityCheck
       BeanDiff.diff(bean1, bean2, fieldsToCompare)
