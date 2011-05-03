@@ -34,12 +34,12 @@ class BeanDiff {
    * @param comparator closure which returns true if values are equals and false otherwise
    * @return
    */
-  static BeanDiff diffWithComparator(Bean bean1, Bean bean2, Closure comparator) {
-    def diff = findCommonFields(bean1, bean2).findAll { fieldName ->
+  static BeanDiff diffWithComparator(Bean bean1, Bean bean2, List fieldsToCompare = findCommonFields(bean1, bean2), Closure comparator) {
+    def diff = fieldsToCompare.findAll { fieldName ->
       def value1 = bean1."${fieldName}"
       def value2 = bean2."${fieldName}"
       comparator.delegate = new Expando([bean1: bean1, bean2: bean2, value1: value1, value2: value2])
-      !comparator.call()
+      !comparator.call([fieldName, value1, value2])
     }
 
     def left = bean1.fieldNames() - bean2.fieldNames()

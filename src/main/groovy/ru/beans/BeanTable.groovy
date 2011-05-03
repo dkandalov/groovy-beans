@@ -78,24 +78,28 @@ class BeanTable {
     this
   }
 
-  def innerJoin(Collection<Bean> beansToJoin) {
-    beansToJoin.collect { thatBean ->
+  Collection<Bean> innerJoin(Collection<Bean> beansToJoin) {
+    def result = new LinkedList()
+    for (def thatBean : beansToJoin) {
       def thisBean = beans.get(thatBean.fieldValuesFor(keys))
+      if (thisBean == null) continue
+
       if (accumulationClosure != null)
-        thisBean?.mergeWith(thatBean, accumulationClosure)
+        result << new Bean(thisBean?.mergeWith(thatBean, accumulationClosure))
       else
-        thisBean?.mergeWith(thatBean)
-    }.findAll {it != null}
+        result << new Bean(thisBean?.mergeWith(thatBean))
+    }
+    result
   }
 
-  def innerJoin(Collection<Bean> beansToJoin, Closure canJoin) {
+  Collection<Bean> innerJoin(Collection<Bean> beansToJoin, Closure canJoin) {
     beansToJoin.collect { thatBean ->
       beans.values().collect { thisBean ->
         if (canJoin(thisBean, thatBean)) {
           if (accumulationClosure != null)
-            thisBean?.mergeWith(thatBean, accumulationClosure)
+            new Bean(thisBean?.mergeWith(thatBean, accumulationClosure))
           else
-            thisBean?.mergeWith(thatBean)
+            new Bean(thisBean?.mergeWith(thatBean))
         }
       }
     }.flatten().findAll { it != null }

@@ -46,7 +46,7 @@ class CsvWriter {
   }
 
   def writeTo(String fileName, def beans) {
-    writeTo(new FileWriter(fileName), beans)
+    writeTo(new BufferedWriter(new FileWriter(fileName)), beans)
   }
 
   def writeTo(Writer writer, def beans) {

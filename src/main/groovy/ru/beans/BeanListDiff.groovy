@@ -20,6 +20,11 @@ class BeanListDiff { // TODO have pretty printer for diffs
     }
   }
 
+  static BeanListDiff diffWithComparator(Collection<Bean> beans1, Collection<Bean> beans2, List keyFields, Closure comparator) {
+    def fieldsToCompare = beans1[0].fieldNames() - keyFields
+    diffWithComparator(beans1, beans2, keyFields, fieldsToCompare, comparator)
+  }
+
   static BeanListDiff diffWithComparator(Collection<Bean> beans1, Collection<Bean> beans2,
                                          List keyFields, List fieldsToCompare, Closure comparator) {
     def groupedBeans1 = beans1.groupBy { bean ->

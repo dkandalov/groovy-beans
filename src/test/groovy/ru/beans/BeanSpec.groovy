@@ -103,10 +103,10 @@ class BeanSpec {
 
   @Test void mergingShouldChangeLeftSideBean() {
     def bean1 = bean([a: 1, b: 2])
-    def bean2 = bean([c: 3])
+    def bean2 = bean([b: 3, c: 4])
 
-    assert bean1.mergeWith(bean2) == bean([a: 1, b: 2, c: 3])
-    assert bean1.c == 3
+    assert bean1.mergeWith(bean2) == bean([a: 1, b: 3, c: 4])
+    assert bean1.c == 4
     assert bean2.a == null
   }
 

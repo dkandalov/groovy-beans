@@ -37,7 +37,7 @@ class Bean {
   }
 
   Bean(Bean bean) {
-    this(bean.data)
+    this(bean.@data)
   }
 
   Bean(def data) {
@@ -45,9 +45,9 @@ class Bean {
   }
 
   Bean(Map data, Map beanType) {
-    this.data = new LinkedHashMap(data) // must be linked map to preserve columns order
-    withType(beanType)
+    this.@data = new LinkedHashMap(data) // must be linked map to preserve columns order
 
+    withType(beanType)
     if (!beanType.empty) {
       applyBeanTypeConversion(data)
     }
@@ -63,22 +63,21 @@ class Bean {
   }
 
   Bean mergeWith(Bean that, Closure accumulationClosure = null) {
-    (that.fieldNames() - this.fieldNames()).each { this.@data.put(it, that.getProperty((String) it)) }
-
-    def commonFields = this.fieldNames().intersect(that.fieldNames())
-    commonFields.each { this.@data.put(it, this.getProperty((String) it)) }
-
-    if (accumulationClosure != null)  accumulationClosure(this, that)
-
+    if (accumulationClosure != null) {
+      accumulationClosure(this, that)
+      (that.fieldNames() - this.fieldNames()).each { this.@data.put(it, that.getProperty((String) it)) }
+    } else {
+      that.fieldNames().each { this.@data.put(it, that.getProperty((String) it)) }
+    }
     this
   }
 
   def eachValue(Closure closure) {  // TODO use delegation to data map?
-    data.each { closure.call(it.key, it.value) }
+    this.@data.each { closure.call(it.key, it.value) }
   }
 
   List fieldNames() {
-    data.keySet().toList()
+    this.@data.keySet().toList()
   }
 
   List fieldValuesFor(List<String> fieldNames) {
@@ -87,19 +86,19 @@ class Bean {
 
   @Override void setProperty(String propertyName, Object newValue) {
     if (beanType.containsKey(propertyName)) {
-      data[propertyName] = beanType[propertyName].convert(newValue)
+      this.@data[propertyName] = beanType[propertyName].convert(newValue)
     } else {
-      data[propertyName] = newValue
+      this.@data[propertyName] = newValue
     }
   }
 
   @Override Object getProperty(String propertyName) {
-    data[propertyName]
+    this.@data[propertyName]
   }
 
   Bean renameField(String oldName, String newName) {
-    def value = data.remove(oldName)
-    data.put(newName, value)
+    def value = this.@data.remove(oldName)
+    this.@data.put(newName, value)
     this
   }
 
