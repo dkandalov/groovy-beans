@@ -28,10 +28,10 @@ class BeanListDiff { // TODO have pretty printer for diffs
   static BeanListDiff diffWithComparator(Collection<Bean> beans1, Collection<Bean> beans2,
                                          List keyFields, List fieldsToCompare, Closure comparator) {
     def groupedBeans1 = beans1.groupBy { bean ->
-      keyFields.collect { field -> bean."${field}"}
+      keyFields.collect { field -> bean."${field}" }
     }
     def groupedBeans2 = beans2.groupBy { bean ->
-      keyFields.collect { field -> bean."${field}"}
+      keyFields.collect { field -> bean."${field}" }
     }
     List left = (groupedBeans1.keySet() - groupedBeans2.keySet()).collect {groupedBeans1.get(it)}.flatten()
     List right = (groupedBeans2.keySet() - groupedBeans1.keySet()).collect {groupedBeans2.get(it)}.flatten()
@@ -52,7 +52,7 @@ class BeanListDiff { // TODO have pretty printer for diffs
               keyFields: keyFields, fieldsToCompare: fieldsToCompare])
 
       BeanDiff beanDiff = (BeanDiff) comparator.call()
-      if (!beanDiff.match()) diff << beanDiff
+      if (!beanDiff.diff.empty) diff << beanDiff
     }
 
     [left, diff, right] as BeanListDiff
@@ -60,9 +60,9 @@ class BeanListDiff { // TODO have pretty printer for diffs
 
   // TODO I want to have more type information in client code
   // TODO  rename diff to "beanDiff" or something like that
-  def left
+  Collection left
   Collection<BeanDiff> diff
-  def right
+  Collection right
 
   BeanListDiff(left, diff, right) {
     this.left = left

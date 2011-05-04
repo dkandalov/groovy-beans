@@ -8,14 +8,14 @@ import static ru.beans.Bean.bean
  * Date: 22/2/11
  */
 class BeanDiffSpec {
-  @Test public void emptyBeansShouldAlwaysMatch() {
+  @Test void emptyBeansShouldAlwaysMatch() {
     def bean1 = bean()
     def bean2 = bean()
     assert BeanDiff.diff(bean1, bean2).match()
     assert BeanDiff.diff(bean2, bean1).match()
   }
 
-  @Test public void shouldFindDifferencesBetweenBeans() {
+  @Test void shouldFindDifferencesBetweenBeans() {
     def bean1 = bean([a: "A", b: 2])
     def bean2 = bean([a: "A", b: 3])
     def bean3 = bean([a: "B", b: 3])
@@ -32,27 +32,31 @@ class BeanDiffSpec {
     assert BeanDiff.diff(bean3, bean1).diff == ["a", "b"]
   }
 
-  @Test public void shouldFindFieldsMissingInOtherBean() {
+  @Test void shouldFindFieldsMissingInOtherBean() {
     def bean1 = bean([a: "A", b: 2])
     def bean2 = bean([a: "A"])
 
+    assert BeanDiff.diff(bean1, bean1).diff == []
     assert BeanDiff.diff(bean1, bean1).left == []
     assert BeanDiff.diff(bean1, bean1).right == []
 
+    assert BeanDiff.diff(bean1, bean2).diff == []
     assert BeanDiff.diff(bean1, bean2).left == ["b"]
     assert BeanDiff.diff(bean1, bean2).right == []
+
+    assert BeanDiff.diff(bean2, bean1).diff == []
     assert BeanDiff.diff(bean2, bean1).left == []
     assert BeanDiff.diff(bean2, bean1).right == ["b"]
   }
 
-  @Test public void shouldCompareBeansUsingOnlySpecifiedFields() {
+  @Test void shouldCompareBeansUsingOnlySpecifiedFields() {
     def bean1 = bean([a: "A", b: 2, c: 3])
     def bean2 = bean([a: "A", b: 2, c: 4])
 
     assert BeanDiff.diff(bean1, bean2, ["a", "b"]).match()
   }
 
-  @Test public void shouldCompareBeansUsingComparator() {
+  @Test void shouldCompareBeansUsingComparator() {
     def doubleComparator = {
       if (value1 instanceof Double && value2 instanceof Double)
         Math.abs((double) value1 - value2) < 0.01
