@@ -29,8 +29,11 @@ class CsvWriter {
   private Map convertors = [:]
   private List enforcedHeader = []
 
-  CsvWriter withHeader(List<String> enforcedHeader)
-  {
+  static def write(String filename, def beans) {
+    new CsvWriter().writeTo(filename, beans)
+  }
+
+  CsvWriter withHeader(List<String> enforcedHeader) {
     this.enforcedHeader = enforcedHeader
     this
   }
@@ -46,7 +49,7 @@ class CsvWriter {
   }
 
   def writeTo(String fileName, def beans) {
-    writeTo(new BufferedWriter(new FileWriter(fileName)), beans)
+    writeTo(new BufferedWriter(new FileWriter(fileName)), beans) // TODO retry if file is locked (by Excel for example)?
   }
 
   def writeTo(Writer writer, def beans) {

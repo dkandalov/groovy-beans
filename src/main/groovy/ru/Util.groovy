@@ -10,17 +10,6 @@ import java.util.concurrent.ThreadFactory
  * Date: 13/2/11
  */
 class Util {
-  static Double abs(def value) {
-    if (value instanceof Double) {
-      Math.abs((double) value)
-    } else if (value instanceof Integer) {
-      Math.abs((int) value)
-    } else if (value instanceof Long) {
-      Math.abs((long) value)
-    } else {
-      throw new IllegalStateException("Could use Math.abs() for value ${value} of type ${value.class}")
-    }
-  }
 
   static Date date(int dayOfMonth, int month, int year) {
     def calendar = Calendar.instance

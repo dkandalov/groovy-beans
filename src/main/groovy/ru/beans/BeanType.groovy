@@ -14,6 +14,7 @@ class BeanType {
 
   static def STRING = new Convertor("STRING", {
     put String.class, { it }
+    put Boolean.class, { it.toString() }
     put Integer.class, { it.toString() }
     put BigDecimal.class, { it.toString() }
     put Double.class, { it.toString() }
@@ -24,6 +25,14 @@ class BeanType {
       put Date.class, { new SimpleDateFormat(format).format(it) }
     })
   }
+
+  static def BOOLEAN = new Convertor("BOOLEAN", {
+    put String.class, { Boolean.parseBoolean(it) }
+    put Boolean.class, { it }
+    put Integer.class, { throw new IllegalStateException() }
+    put BigDecimal.class, { throw new IllegalStateException() }
+    put Double.class, { throw new IllegalStateException() }
+  })
 
   static def INTEGER = new Convertor("INTEGER", {
     put String.class, { Integer.parseInt(it) }
@@ -37,6 +46,13 @@ class BeanType {
     put Integer.class, { it }
     put String.class, { Double.parseDouble(it) }
     put BigDecimal.class, { throw new IllegalStateException() }
+  })
+
+  static def DECIMAL = new Convertor("DECIMAL", {
+    put Double.class, { new BigDecimal((double) it) }
+    put Integer.class, { new BigDecimal((int) it) }
+    put String.class, { new BigDecimal((String) it) }
+    put BigDecimal.class, { it }
   })
 
   static def DATE(def format) {
