@@ -1,11 +1,11 @@
 package com.cmcmarkets.csv
 
-import org.junit.Test
 import com.cmcmarkets.beans.Bean
 import com.cmcmarkets.beans.BeanType
+import org.junit.Test
 import static com.cmcmarkets.beans.Bean.beans
 
-/**
+ /**
  * User: dima
  * Date: 9/2/11
  */
@@ -117,6 +117,13 @@ AA,4,5.0
             [a: "1", b: "2,2", c: "3,3"],
             [a: "1", b: "\"2\"", c: "3"]
     )
+  }
+
+  @Test public void shouldUnEscapeQuotesInHeader() {
+    def stringReader = new StringReader("""\"a\",\"b b\",\"c\"
+1,2,3
+""")
+    assert new CsvReader().read(stringReader) == beans([a: "1", "b b": "2", c: "3"])
   }
 
   @Test public void shouldSplitStringIntoValues() {

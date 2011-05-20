@@ -1,5 +1,7 @@
 package com.cmcmarkets
 
+import com.cmcmarkets.csv.CsvReader
+import com.cmcmarkets.csv.CsvWriter
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
@@ -10,6 +12,13 @@ import java.util.concurrent.ThreadFactory
  * Date: 13/2/11
  */
 class Util {
+
+  static def grepCsv(String csvFileName, Closure isAccepted) {
+    def beans = new CsvReader().read(csvFileName)
+    beans = beans.findAll { isAccepted(it) }
+    new CsvWriter().writeTo(csvFileName, beans)
+    beans
+  }
 
   static Date date(int dayOfMonth, int month, int year) {
     def calendar = Calendar.instance

@@ -29,6 +29,10 @@ class CsvReader {
   List columnsToRead = []
   Map columnMapping = new LinkedHashMap()
 
+  static List<Bean> readCsv(String fileName) {
+    new CsvReader().read(fileName)
+  }
+
   CsvReader withBeanType(def beanType) {
     this.beanType = beanType
     this
@@ -86,7 +90,13 @@ class CsvReader {
   }
 
   private def readHeader(String s) {
-    s.split(",").toList()
+    s.split(",").toList().collect {
+      if (it.startsWith("\"") && it.endsWith("\"")) {
+        it[1..-2]
+      } else {
+        it
+      }
+    }
   }
 
   private def prepareHeaderMapping() {
