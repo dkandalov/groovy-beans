@@ -1,9 +1,8 @@
-package com
+package com.cmcmarkets
 
 import org.junit.Test
-import com.cmcmarkets.Util
 
-/**
+ /**
  * User: DKandalov
  */
 class UtilTest {
