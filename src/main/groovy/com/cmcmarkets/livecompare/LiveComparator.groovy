@@ -18,18 +18,21 @@ class LiveComparator {
   def start(long period, TimeUnit timeUnit, Closure listener) {
     executor.scheduleAtFixedRate(new Runnable() {
       @Override void run() {
-        def list1 = new ArrayList()
-        def list2 = new ArrayList()
-        deque1.drainTo(list1)
-        deque2.drainTo(list2)
+        try {
+          def list1 = new ArrayList()
+          def list2 = new ArrayList()
+          deque1.drainTo(list1)
+          deque2.drainTo(list2)
+          def diff = listComparator.compare(list1, list2)
+          if (!diff.empty) listener(diff, Math.max(list1.size(), list2.size()))
 
-        def diff = listComparator.compare(list1, list2)
-        if (diff != [:]) listener(diff)
+          // TODO potentially more comparison
 
-        // TODO potentially more comparison
-
-        if (!list1.empty) list1.each {deque1.addFirst(it)}
-        if (!list2.empty) list2.each {deque2.addFirst(it)}
+          if (!list1.empty) list1.each {deque1.addFirst(it)}
+          if (!list2.empty) list2.each {deque2.addFirst(it)}
+        } catch (Exception e) {
+          e.printStackTrace()
+        }
 
       }
     }, period, period, timeUnit)

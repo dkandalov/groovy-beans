@@ -1,5 +1,8 @@
 package com.cmcmarkets.beans
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+
 /**
  * // TODO document
  *
@@ -42,7 +45,7 @@ class BeanListDiff { // TODO have pretty printer for diffs
       def beansForKey1 = new LinkedList(groupedBeans1.get(key))
       def beansForKey2 = new LinkedList(groupedBeans2.get(key))
 
-      if (beansForKey1.size() != beansForKey2.size()) throw new IllegalStateException() // TODO
+      if (beansForKey1.size() != beansForKey2.size()) throw new IllegalStateException("There different amount of beans for keys: ${commonKeys}") // TODO
       if (beansForKey1.size() > 1) throw new IllegalStateException("There are several beans for key fields. Beans: ${beansForKey1}") // TODO provide a special case to exclude elements with similar keys?
       if (beansForKey2.size() > 1) throw new IllegalStateException("There are several beans for key fields. Beans: ${beansForKey2}")
 
@@ -55,19 +58,23 @@ class BeanListDiff { // TODO have pretty printer for diffs
       if (!beanDiff.diff.empty) diff << beanDiff
     }
 
-    [left, diff, right] as BeanListDiff
+    new BeanListDiff(left, diff, right, keyFields)
   }
 
   // TODO I want to have more type information in client code
   // TODO  rename diff to "beanDiff" or something like that
+  private Logger logger = LoggerFactory.getLogger(BeanListDiff.class)
+
   Collection left
   Collection<BeanDiff> diff
   Collection right
+  Collection keyFields
 
-  BeanListDiff(left, diff, right) {
+  BeanListDiff(left, diff, right, keyFields) {
     this.left = left
     this.diff = diff
     this.right = right
+    this.keyFields = keyFields
   }
 
   boolean match() {
@@ -81,4 +88,22 @@ class BeanListDiff { // TODO have pretty printer for diffs
             ", right=" + right +
             '}';
   }
+
+  def logDiff() {
+    logger.info "===== diffs ====="
+    diff.each { beanDiff ->
+      logger.info "key: " + keyFields.collect { it + ": " + beanDiff.bean1."$it" } + " diff: " + beanDiff.diff.collect { it + " [" + beanDiff.bean1."$it" + ", " + beanDiff.bean2."$it" + "]"}
+    }
+
+    logger.info "===== left ====="
+    left.each { bean -> logger.info keyFields.collect { it + ": " + bean."$it" }.toString() }
+
+    logger.info "===== right ====="
+    right.each { bean -> logger.info keyFields.collect { it + ": " + bean."$it" }.toString() }
+
+    logger.info "diff size: ${diff.size()}"
+    logger.info "left size: ${left.size()}"
+    logger.info "right size: ${right.size()}"
+  }
+
 }
