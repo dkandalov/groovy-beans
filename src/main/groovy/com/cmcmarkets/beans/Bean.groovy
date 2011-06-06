@@ -1,9 +1,11 @@
 package com.cmcmarkets.beans
 
 /**
- * A storage for any data. It's like {@link Expando} but with additional features.
+ * Storage for data with behavior of {@link Map} and syntax of an object.
+ * It's like {@link Expando} but with a bit more functionality.
  *
- * Should:
+ *
+ * Eventually it will probably support:
  *  + nice bean: allows to read/write any property
  *  - strict bean: only allows to read/write properties from "beanType"
  *
@@ -17,34 +19,64 @@ class Bean {
   private def data = [:]
   private def beanType = [:]
 
-  static Collection beans(Collection<Map> data) {
-    data.collect {new Bean(it)}
+  /**
+   * @data
+   * @return collection of beans created from {@code data}
+   */
+  static Collection<Bean> beans(Collection<Map> data) {
+    data.collect{ new Bean(it) }
   }
 
-  static Collection beans(Map... data) {
-    data.collect {new Bean(it)}
+  /**
+   * @data
+   * @return collection of beans created from {@code data}
+   */
+  static Collection<Bean> beans(Map... data) {
+    data.collect{ new Bean(it) }
   }
 
+  /**
+   * @return new empty {@link Bean}
+   */
   static Bean bean() {
     bean([:])
   }
 
+  /**
+   * @data
+   * @return {@link Bean} with values copied from {@data}
+   */
   static Bean bean(Map data) {
     new Bean(data)
   }
 
+  /**
+   * Creates new empty bean.
+   */
   Bean() {
   }
 
+  /**
+   * Copy constructor.
+   * @param bean bean to copy data from
+   */
   Bean(Bean bean) {
     this(bean.@data)
   }
 
-  Bean(def data) {
+  /**
+   * @param data a {@link Map} to copy data from
+   */
+  Bean(Map data) {
     this(data, [:])
   }
 
-  Bean(Map data, Map beanType) {
+  /**
+   * @param data a {@link Map} to copy data from
+   * @param beanType a {@link Map} which associates field names with {@link BeanType}s
+   * @see #withType(Object)
+   */
+  Bean(Map data, Map  beanType) {
     this.@data = new LinkedHashMap(data) // must be linked map to preserve columns order
 
     withType(beanType)
@@ -57,11 +89,23 @@ class Bean {
     newData.each { setProperty(it.key, it.value) }
   }
 
+  /**
+   * Adds type information to this bean.
+   * @param beanType a {@link Map} which associates field names with {@link BeanType}s
+   */
   Bean withType(def beanType) {
     this.beanType = beanType
     this
   }
 
+  /**
+   * Modifies this bean by adding all fields from {@code that} bean.
+   * It will overwrite all fields in this bean with same names unless there is {@code accumulationClosure}.
+   *
+   * @param that {@link Bean} to merge this bean with
+   * @param accumulationClosure if present, should merge this bean fields which have the same name as {@code that} fields
+   * @return this
+   */
   Bean mergeWith(Bean that, Closure accumulationClosure = null) {
     if (accumulationClosure != null) {
       accumulationClosure(this, that)
@@ -72,7 +116,7 @@ class Bean {
     this
   }
 
-  def eachValue(Closure closure) {  // TODO use delegation to data map?
+  def eachValue(Closure closure) {
     this.@data.each { closure.call(it.key, it.value) }
   }
 
@@ -81,7 +125,7 @@ class Bean {
   }
 
   List fieldValuesFor(List<String> fieldNames) {
-    fieldNames.collect {getProperty(it)}
+    fieldNames.collect{ getProperty(it) }
   }
 
   @Override void setProperty(String propertyName, Object newValue) {
@@ -96,6 +140,12 @@ class Bean {
     this.@data[propertyName]
   }
 
+  /**
+   * Modifies this bean by renaming field from {@code oldName} to {@code newName}.
+   * @param oldName
+   * @param newName
+   * @return this
+   */
   Bean renameField(String oldName, String newName) {
     def value = this.@data.remove(oldName)
     this.@data.put(newName, value)

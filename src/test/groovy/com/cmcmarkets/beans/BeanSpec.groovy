@@ -25,7 +25,9 @@ class BeanSpec {
 
   @Test void shouldBeAbleToSetPropertyWithTheSameNameAsInternalMap() {
     def bean = new Bean()
-    bean.data = 123
+    bean.aField = 1
+    bean.data = 123 // IntelliJ might complain that this expression exceeds access right even though it's not the case
+    assert bean.aField == 1
     assert bean.data == 123
   }
 
@@ -126,5 +128,16 @@ class BeanSpec {
     bean.renameField("b", "c")
     assert bean.b == null
     assert bean.c == 2
+  }
+
+  @Test
+  public void fieldNamesAreCaseSensitive() {
+    def bean = bean()
+    bean.aaa = 1
+    bean.Aaa = 2
+    bean.AAa = 3
+    assert bean.aaa == 1
+    assert bean.Aaa == 2
+    assert bean.AAa == 3
   }
 }

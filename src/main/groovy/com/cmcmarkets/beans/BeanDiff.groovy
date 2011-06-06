@@ -25,13 +25,13 @@ class BeanDiff {
     def left = bean1.fieldNames() - bean2.fieldNames()
     def right = bean2.fieldNames() - bean1.fieldNames()
 
-    [left, diff, right, bean1, bean2] as BeanDiff
+    new BeanDiff(left, diff, right, bean1, bean2)
   }
 
   /**
    * @param bean1
    * @param bean2
-   * @param comparator closure which returns true if values are equals and false otherwise
+   * @param comparator closure which returns true if values are equals or false otherwise
    * @return
    */
   static BeanDiff diffWithComparator(Bean bean1, Bean bean2, List fieldsToCompare = findCommonFields(bean1, bean2), Closure comparator) {
@@ -45,13 +45,13 @@ class BeanDiff {
     def left = bean1.fieldNames() - bean2.fieldNames()
     def right = bean2.fieldNames() - bean1.fieldNames()
 
-    [left, diff, right, bean1, bean2] as BeanDiff
+    new BeanDiff(left, diff, right, bean1, bean2)
   }
 
-  def left
-  def diff
-  def right
-  def bean1, bean2
+  final Collection left
+  final Collection diff
+  final Collection right
+  final Bean bean1, bean2
 
   BeanDiff(left, diff, right, bean1, bean2) {
     this.left = left

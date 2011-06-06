@@ -14,20 +14,20 @@ class BeanTypeSpec {
   @Test public void shouldConvertIntoDate() {
     def bean = new Bean().withType(date: BeanType.DATE("MM/yyyy"))
     bean.date = "02/2012"
-    assert bean.date == date(01, 02, 2012)
+    assert bean.date == date(1, 2, 2012)
 
-    bean.date = date(01, 03, 2012).getTime()
-    assert bean.date == date(01, 03, 2012)
+    bean.date = date(1, 3, 2012).getTime()
+    assert bean.date == date(1, 3, 2012)
 
-    bean.date = date(01, 04, 2012).getTime().toString()
-    assert bean.date == date(01, 04, 2012)
+    bean.date = date(1, 4, 2012).getTime().toString()
+    assert bean.date == date(1, 4, 2012)
 
     shouldFail { bean.date = "some stuff which is not properly formatted" }
   }
 
   @Test public void shouldConvertDateIntoFormattedString() {
     def beanType = BeanType.DATE_AS_STRING("MM/yyyy")
-    assert beanType.convert(Util.date(01, 02, 2011)) == "02/2011"
+    assert beanType.convert(Util.date(1, 2, 2011)) == "02/2011"
   }
 
   @Test public void shouldConvertIntoString() {
