@@ -29,6 +29,10 @@ class CsvWriter {
   private Map convertors = [:]
   private List enforcedHeader = []
 
+  static def write(File file, def beans) {
+    new CsvWriter().writeTo(new FileWriter(file), beans)
+  }
+
   static def write(String filename, def beans) {
     new CsvWriter().writeTo(filename, beans)
   }

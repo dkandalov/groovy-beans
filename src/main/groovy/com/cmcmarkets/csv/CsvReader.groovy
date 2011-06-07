@@ -29,6 +29,10 @@ class CsvReader {
   List columnsToRead = []
   Map columnMapping = new LinkedHashMap()
 
+  static List<Bean> readCsv(File file) {
+    new CsvReader().read(new FileReader(file))
+  }
+
   static List<Bean> readCsv(String fileName) {
     new CsvReader().read(fileName)
   }
@@ -74,7 +78,8 @@ class CsvReader {
 
   private def readBean(String s) {
     def values = splitIntoValues(s)
-    if (values.size() < header.size()) throw new IllegalStateException("Too few values in line \"${s}\"")
+    if (values.size() < header.size())
+      throw new IllegalStateException("Too few values in line \"${s}\". Header has ${header.size()} column, but read ${values.size()} values.")
     if (values.size() > header.size()) throw new IllegalStateException("Too many values in line \"${s}\"")
 
     def map = [:]
@@ -85,8 +90,8 @@ class CsvReader {
   }
 
   static def splitIntoValues(String s) {
-    (s =~ /"(.*?)",|"(.*)"$|(.*?),|(?<=,)(.*)$/)
-            .collect { it[1..4].find {it != null}.replaceAll("\"\"", "\"") }
+    (s =~ /"(.*?)",|"(.*)"$|(.*?),|(.+)$|(?<=,)(.*)$/)
+            .collect { it[1..5].find{ it != null }.replaceAll("\"\"", "\"") }
   }
 
   private def readHeader(String s) {

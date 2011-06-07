@@ -95,6 +95,7 @@ class Bean {
    */
   Bean withType(def beanType) {
     this.beanType = beanType
+    eachValue { key, value -> setProperty(key, value) }
     this
   }
 
@@ -130,7 +131,11 @@ class Bean {
 
   @Override void setProperty(String propertyName, Object newValue) {
     if (beanType.containsKey(propertyName)) {
-      this.@data[propertyName] = beanType[propertyName].convert(newValue)
+      try {
+        this.@data[propertyName] = beanType[propertyName].convert(newValue)
+      } catch (Exception e) {
+        throw new IllegalStateException("Failed to set property \"${propertyName}\" to value \"${newValue}\"", e)
+      }
     } else {
       this.@data[propertyName] = newValue
     }

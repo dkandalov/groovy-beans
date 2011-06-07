@@ -1,7 +1,9 @@
 package com.cmcmarkets.storage
 
+import com.cmcmarkets.csv.CsvReader
 import com.thoughtworks.xstream.XStream
 import com.thoughtworks.xstream.io.xml.StaxDriver
+import com.cmcmarkets.csv.CsvWriter
 
 /**
  * User: dima
@@ -20,19 +22,41 @@ class Storage { // TODO document
     assert lastValue == closure()
   }
 
-  static def cachedReload(String id, Closure closure) {
+  static <T> T cachedReload(String id, Closure closure) {
     def result = closure.call()
     save(id, result)
-    result
+    (T) result
   }
 
-  static def cached(String id, Closure closure) {
+  static <T> T cached(String id, Closure closure) {
     def result = load(id)
     if (result == null) {
       result = closure.call()
       if (result != null) save(id, result)
     }
-    result
+    (T) result
+  }
+
+  static <T> T cachedCsvReload(String id, String storage = STORAGE, Closure closure) {
+    def result = closure.call()
+    if (result != null) CsvWriter.write(csvFileFor(id, storage), result)
+    (T) result
+  }
+
+  static <T> T cachedCsv(String id, String storage = STORAGE, Closure closure) {
+    def result = loadCsv(id, storage)
+    if (result == null) {
+      result = closure.call()
+      if (result != null) CsvWriter.write(csvFileFor(id, storage), result)
+    }
+    (T) result
+  }
+
+  static def loadCsv(String id, String storage = STORAGE) {
+    def file = csvFileFor(id, storage)
+    if (!file.exists()) return null
+
+    CsvReader.readCsv(file)
   }
 
   static def load(String id, String storage = STORAGE) {
@@ -81,6 +105,13 @@ class Storage { // TODO document
     true
   }
 
+  static boolean deleteCsv(String id, String storage = STORAGE) {
+    def file = csvFileFor(id, storage)
+    if (!file.exists()) return false
+    file.delete()
+    true
+  }
+
   private static def createStorageFolder(String storage) {
     def storageFolder = new File(storage)
     if (!storageFolder.exists()) storageFolder.mkdir()
@@ -88,5 +119,9 @@ class Storage { // TODO document
 
   private static File fileFor(String id, String storage) {
     new File("${storage}/${id}.xml")
+  }
+
+  private static File csvFileFor(String id, String storage) {
+    new File("${storage}/${id}.csv")
   }
 }

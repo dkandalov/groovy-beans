@@ -3,7 +3,7 @@ package com.cmcmarkets.csv
 import com.cmcmarkets.beans.Bean
 import com.cmcmarkets.beans.BeanType
 import org.junit.Test
-import static com.cmcmarkets.beans.Bean.beans
+import static com.cmcmarkets.beans.Bean.*
 
  /**
  * User: dima
@@ -127,6 +127,7 @@ AA,4,5.0
   }
 
   @Test public void shouldSplitStringIntoValues() {
+    assert CsvReader.splitIntoValues("1") == ["1"]
     assert CsvReader.splitIntoValues("1,2,") == ["1", "2", ""]
     assert CsvReader.splitIntoValues("1,2,3") == ["1", "2", "3"]
 

@@ -2,6 +2,7 @@ package com.cmcmarkets.beans
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import org.codehaus.groovy.runtime.NullObject
 
 /**
  * It was supposed to be something like type for bean fields.
@@ -32,6 +33,15 @@ class BeanType {
     put Integer.class, { throw new IllegalStateException() }
     put BigDecimal.class, { throw new IllegalStateException() }
     put Double.class, { throw new IllegalStateException() }
+  })
+
+  static def BOOLEAN_LENIENT = new Convertor("BOOLEAN_LENIENT", {
+    put String.class, { Boolean.parseBoolean(it) }
+    put Boolean.class, { it }
+    put Integer.class, { it != 0 }
+    put BigDecimal.class, { it != 0 }
+    put Double.class, { it != 0.0d }
+    put NullObject.class, { false }
   })
 
   static def INTEGER = new Convertor("INTEGER", {
@@ -86,7 +96,9 @@ class BeanType {
 
     def convert(def value) {
       def closure = typeMapping[value.getClass()]
-      if (closure == null) throw new IllegalStateException("There is no mapping from type ${value.getClass()} to ${convertTo}. (Value: \"${value}\")")
+      if (closure == null) {
+        throw new IllegalStateException("There is no mapping from type ${value.getClass()} to ${convertTo}. (Value: \"${value}\")")
+      }
 
       closure.call(value)
     }
