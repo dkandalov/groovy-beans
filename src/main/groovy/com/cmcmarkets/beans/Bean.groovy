@@ -157,6 +157,15 @@ class Bean {
     this
   }
 
+  Bean removeFields(Closure closure) {
+    def keysToRemove = []
+    this.@data.each { key, value ->
+      if (closure(key, value)) keysToRemove << key
+    }
+    keysToRemove.each{ this.@data.remove(it) }
+    this
+  }
+
   @Override boolean equals(o) {
     if (this.is(o)) return true;
     if (this.getClass() != o.getClass()) return false;
