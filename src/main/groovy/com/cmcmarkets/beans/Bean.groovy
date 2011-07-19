@@ -24,7 +24,7 @@ class Bean {
    * @return collection of beans created from {@code data}
    */
   static Collection<Bean> beans(Collection<Map> data) {
-    data.collect{ new Bean(it) }
+    data.collect{ new Bean((Map) it) }
   }
 
   /**
@@ -32,7 +32,7 @@ class Bean {
    * @return collection of beans created from {@code data}
    */
   static Collection<Bean> beans(Map... data) {
-    data.collect{ new Bean(it) }
+    data.collect{ new Bean((Map) it) }
   }
 
   /**
@@ -48,6 +48,10 @@ class Bean {
    */
   static Bean bean(Map data) {
     new Bean(data)
+  }
+
+  static Bean bean(def object) {
+    new Bean((Map) object.properties)
   }
 
   /**

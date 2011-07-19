@@ -47,6 +47,7 @@ class Storage { // TODO document
     def result = loadCsv(id, storage)
     if (result == null) {
       result = closure.call()
+      createStorageFolder(storage)
       if (result != null) CsvWriter.write(csvFileFor(id, storage), result)
     }
     (T) result

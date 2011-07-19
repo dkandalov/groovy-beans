@@ -28,6 +28,7 @@ class CsvWriter {
   private List fieldsOrder = []
   private Map convertors = [:]
   private List enforcedHeader = []
+  private String quote = ""
 
   static def write(File file, def beans) {
     new CsvWriter().writeTo(new FileWriter(file), beans)
@@ -52,6 +53,11 @@ class CsvWriter {
     this
   }
 
+  CsvWriter withQuotes() {
+    quote = '"'
+    this
+  }
+
   def writeTo(String fileName, def beans) {
     writeTo(new BufferedWriter(new FileWriter(fileName)), beans) // TODO retry if file is locked (by Excel for example)?
   }
@@ -72,13 +78,13 @@ class CsvWriter {
   }
 
   private String beanAsString(def bean) {
-    header.collect {
+    quote + header.collect {
       def value = bean."$it"
       if (convertors.containsKey(it)) {
         value = convertors.get(it).convert(value)
       }
       asString(value)
-    }.join(",") + "\n"
+    }.join("${quote},${quote}") + "${quote}\n"
   }
 
   private def asString(value) {
@@ -90,7 +96,7 @@ class CsvWriter {
   }
 
   private String headerAsString(List header) {
-    return header.join(",") + "\n"
+    return quote + header.join("${quote},${quote}") + "${quote}\n"
   }
 
   private List getHeaderFrom(Collection beans) {

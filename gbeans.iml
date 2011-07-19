@@ -24,6 +24,7 @@
     <orderEntry type="library" name="Maven: org.codehaus.plexus:plexus-utils:1.5.5" level="project" />
     <orderEntry type="library" name="Maven: com.thoughtworks.qdox:qdox:1.8" level="project" />
     <orderEntry type="library" name="Maven: jline:jline:0.9.94" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.mockito:mockito-all:1.8.5" level="project" />
   </component>
 </module>
 

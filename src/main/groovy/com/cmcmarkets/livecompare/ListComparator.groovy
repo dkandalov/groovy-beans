@@ -24,8 +24,8 @@ class ListComparator {
   def findNextMatch() {
     if (list1.empty || list2.empty) return null
 
-    def generator = new PositionIterator(list1.size(), list2.size())
-    for (def position: generator) {
+    def positionIterator = new PositionIterator(list1.size(), list2.size())
+    for (def position: positionIterator) {
       if (list1[position[0]] == list2[position[1]]) return position
     }
 
