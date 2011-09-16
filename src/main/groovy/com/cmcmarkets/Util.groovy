@@ -1,5 +1,6 @@
 package com.cmcmarkets
 
+import com.cmcmarkets.beans.Bean
 import com.cmcmarkets.csv.CsvReader
 import com.cmcmarkets.csv.CsvWriter
 import java.util.concurrent.Callable
@@ -13,7 +14,15 @@ import java.util.concurrent.ThreadFactory
  */
 class Util {
 
-  static def grepCsv(String csvFileName, Closure isAccepted) {
+  static runSafely(Closure closure) {
+    try {
+      closure.call()
+    } catch (Exception e) {
+      e.printStackTrace()
+    }
+  }
+
+  static List<Bean> grepCsv(String csvFileName, Closure isAccepted) {
     def beans = new CsvReader().read(csvFileName)
     beans = beans.findAll { isAccepted(it) }
     new CsvWriter().writeTo(csvFileName, beans)

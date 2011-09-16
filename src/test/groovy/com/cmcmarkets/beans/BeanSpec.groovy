@@ -23,10 +23,11 @@ class BeanSpec {
     assert bean.b == null
   }
 
+  @SuppressWarnings("GroovyAccessibility")  // IntelliJ might complains that this expression exceeds access right even though it's not the case
   @Test void shouldBeAbleToSetPropertyWithTheSameNameAsInternalMap() {
     def bean = new Bean()
     bean.aField = 1
-    bean.data = 123 // IntelliJ might complain that this expression exceeds access right even though it's not the case
+    bean.data = 123
     assert bean.aField == 1
     assert bean.data == 123
   }

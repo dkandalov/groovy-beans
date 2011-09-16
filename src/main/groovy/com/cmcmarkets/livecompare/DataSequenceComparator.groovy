@@ -15,6 +15,29 @@ class DataSequenceComparator {
   def executor = Executors.newScheduledThreadPool(1)
   def listComparator = new ListComparator()
 
+  static compareStreams(stream1, stream2, long period = 3, TimeUnit timeUnit = TimeUnit.SECONDS) {
+    def comparator = new DataSequenceComparator().startComparingEvery(period, timeUnit) { diff, consumedFrom1, consumedFrom2, remainingIn1, remainingIn2 ->
+      if (diff.size() > 0) {
+        println "===================================================== ${new Date()}"
+        println diff
+        println "====================================================="
+      }
+      println "consumed: ${consumedFrom1}, ${consumedFrom2}; remaining: ${remainingIn1.size()}, ${remainingIn2.size()}"
+    }
+    stream1.onEvent{ comparator.add1(it) }
+    stream2.onEvent{ comparator.add2(it) }
+  }
+
+  static asStream(Closure onInput, Closure convert) {
+    def callback = null
+    onInput { input ->
+      if (callback == null) return
+      def event = convert(input)
+      if (event != null) callback(event)
+    }
+    new Expando([onEvent: { callback = it }])
+  }
+
   def startComparingEvery(long period, TimeUnit timeUnit, Closure listener) {
     executor.scheduleAtFixedRate(new Runnable() {
       @Override void run() {
