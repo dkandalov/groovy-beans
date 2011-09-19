@@ -1,6 +1,8 @@
 package com.cmcmarkets.csv
 
- /**
+import com.cmcmarkets.beans.Bean
+
+/**
  * Reads {@link com.cmcmarkets.beans.Bean}s from csv file.
  *
  * Should:
@@ -23,12 +25,15 @@ package com.cmcmarkets.csv
  * User: dima
  * Date: 15/2/11
  */
-class CsvWriter {
+class CsvWriter implements Closeable {
   private List header = []
   private List fieldsOrder = []
   private Map convertors = [:]
   private List enforcedHeader = []
   private String quote = ""
+
+  private Writer writerToAppendTo
+  private boolean isFirstAppend = true
 
   static def write(File file, def beans) {
     new CsvWriter().writeTo(new FileWriter(file), beans)
@@ -36,6 +41,17 @@ class CsvWriter {
 
   static def write(String filename, def beans) {
     new CsvWriter().writeTo(filename, beans)
+  }
+
+  static def appendTo(String filename) {
+    appendTo(new BufferedWriter(new FileWriter(filename)))
+  }
+
+  static def appendTo(Writer writer) {
+    def csvWriter = new CsvWriter()
+    csvWriter.writerToAppendTo = writer
+    Runtime.runtime.addShutdownHook { csvWriter.close() }
+    csvWriter
   }
 
   CsvWriter withHeader(List<String> enforcedHeader) {
@@ -58,6 +74,17 @@ class CsvWriter {
     this
   }
 
+  def append(Bean bean, flush = false) {
+    if (isFirstAppend) {
+      header = getHeaderFrom([bean])
+      writerToAppendTo.append(headerAsString(header))
+      isFirstAppend = false
+    }
+    writerToAppendTo.append(beanAsString(bean))
+    if (flush) writerToAppendTo.flush()
+  }
+
+  // the reason "fileName" is not passed in constructor is that syntax "CsvWriter.writeTo(myFile, beans)" seems to be closer to human language
   def writeTo(String fileName, def beans) {
     writeTo(new BufferedWriter(new FileWriter(fileName)), beans) // TODO retry if file is locked (by Excel for example)?
   }
@@ -75,6 +102,10 @@ class CsvWriter {
       w.append(headerAsString(header))
       beans.each { w.append(beanAsString(it)) }
     }
+  }
+
+  def writeTo(Writer writer, Closure closure) {
+
   }
 
   private String beanAsString(def bean) {
@@ -105,5 +136,9 @@ class CsvWriter {
       bean.fieldNames().each { header.add(it) }
     }.toList()
     header.toList()
+  }
+
+  void close() {
+    writerToAppendTo?.close()
   }
 }

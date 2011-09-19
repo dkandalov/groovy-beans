@@ -1,9 +1,9 @@
 package com.cmcmarkets.csv
 
-import org.junit.Test
 import com.cmcmarkets.beans.BeanType
-import static com.cmcmarkets.Util.date
-import static com.cmcmarkets.beans.Bean.beans
+import org.junit.Test
+import static com.cmcmarkets.Util.*
+import static com.cmcmarkets.beans.Bean.*
 
 /**
  * User: dima
@@ -72,7 +72,7 @@ A,,
 
   @Test public void shouldUseConvertors() {
     def csv = new StringWriter()
-    def beans = beans([a: date(17, 02, 2011), b: 2, c: 3.0], [a: date(20, 02, 2011), b: 4, c: 5.0])
+    def beans = beans([a: date(17, 2, 2011), b: 2, c: 3.0], [a: date(20, 2, 2011), b: 4, c: 5.0])
     new CsvWriter().usingConvertors(["a" : BeanType.DATE_AS_STRING("dd/MM/yyyy")])
             .writeTo(csv, beans)
 
@@ -97,6 +97,23 @@ A,,
 "1,1",2,3
 1,"2,2","3,3"
 1,""2"",""3""3
+"""
+  }
+
+  @Test
+  public void shouldAppendBeansToCsvFile() {
+    def csv = new StringWriter()
+    def writer = CsvWriter.appendTo(csv)
+    writer.with {
+      append bean([a: "1", b: "2", c: "3"])
+      append bean([a: "4", b: "5", c: "6"])
+      append bean([a: "7", b: "8", c: "9"])
+      close()
+    }
+  assert csv.toString() == """a,b,c
+1,2,3
+4,5,6
+7,8,9
 """
   }
 }
