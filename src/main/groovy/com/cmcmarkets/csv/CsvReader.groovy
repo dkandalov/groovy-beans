@@ -2,7 +2,7 @@ package com.cmcmarkets.csv
 
 import com.cmcmarkets.beans.Bean
 
- /**
+/**
  * Reads {@link Bean}s from csv file.
  *
  * Should:

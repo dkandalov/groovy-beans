@@ -27,7 +27,7 @@ import com.cmcmarkets.beans.Bean
  */
 class CsvWriter implements Closeable {
   private List header = []
-  private List fieldsOrder = []
+  private List fieldOrder = []
   private Map convertors = [:]
   private List enforcedHeader = []
   private String quote = ""
@@ -59,8 +59,8 @@ class CsvWriter implements Closeable {
     this
   }
 
-  CsvWriter usingFieldOrder(List<String> fieldsOrder) {
-    this.fieldsOrder = fieldsOrder
+  CsvWriter usingFieldOrder(List<String> fieldOrder) {
+    this.fieldOrder = fieldOrder
     this
   }
 
@@ -93,7 +93,7 @@ class CsvWriter implements Closeable {
     if (beans.empty) return
     if (enforcedHeader.empty) {
       header = getHeaderFrom(beans)
-      header = fieldsOrder + (header - fieldsOrder)
+      header = fieldOrder + (header - fieldOrder)
     } else {
       header = enforcedHeader
     }
@@ -104,18 +104,21 @@ class CsvWriter implements Closeable {
     }
   }
 
-  def writeTo(Writer writer, Closure closure) {
-
-  }
-
   private String beanAsString(def bean) {
-    quote + header.collect {
+    def rowValuesAsString = header.collect {
       def value = bean."$it"
-      if (convertors.containsKey(it)) {
-        value = convertors.get(it).convert(value)
-      }
+      if (convertors.containsKey(it)) value = convertors.get(it).convert(value)
       asString(value)
-    }.join("${quote},${quote}") + "${quote}\n"
+    }
+
+    def isQuoted = { it.startsWith(quote) && it.endsWith(quote) }
+    def result = ""
+    for (int i = 0; i < rowValuesAsString.size() - 1; i ++) {
+      def s = rowValuesAsString[i]
+      result += (isQuoted(s) ? s + "," : quote + s + quote + ",")
+    }
+    def last = rowValuesAsString.last()
+    result + (isQuoted(last) ? last + "\n" : quote + last + quote + "\n")
   }
 
   private def asString(value) {

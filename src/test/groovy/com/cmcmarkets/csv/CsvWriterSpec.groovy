@@ -100,6 +100,18 @@ A,,
 """
   }
 
+  @Test public void shouldNotUseQuotesTwice_IfQuotesAreEnforced_And_ValueRequiresQuotes() {
+    def csv = new StringWriter()
+    def beans = beans(
+            [a: 1, text: "Ameriprise Financial, Inc."],
+    )
+    new CsvWriter().withQuotes().writeTo(csv, beans)
+
+    assert csv.toString() == '''"a","text"
+"1","Ameriprise Financial, Inc."
+'''
+  }
+
   @Test
   public void shouldAppendBeansToCsvFile() {
     def csv = new StringWriter()

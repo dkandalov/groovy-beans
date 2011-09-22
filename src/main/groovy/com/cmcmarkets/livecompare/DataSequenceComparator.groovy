@@ -15,12 +15,13 @@ class DataSequenceComparator {
   def executor = Executors.newScheduledThreadPool(1)
   def listComparator = new ListComparator()
 
-  static compareStreams(stream1, stream2, long period = 3, TimeUnit timeUnit = TimeUnit.SECONDS) {
+  static compareStreams(stream1, stream2, long period = 3, TimeUnit timeUnit = TimeUnit.SECONDS, Closure closure) {
     def comparator = new DataSequenceComparator().startComparingEvery(period, timeUnit) { diff, consumedFrom1, consumedFrom2, remainingIn1, remainingIn2 ->
-      if (diff.size() > 0) {
+      if (diff.size() > 0 && (!diff.containsKey("left") || !diff.containsKey("right"))) {
         println "===================================================== ${new Date()}"
         println diff
         println "====================================================="
+        closure.call(diff)
       }
       println "consumed: ${consumedFrom1}, ${consumedFrom2}; remaining: ${remainingIn1.size()}, ${remainingIn2.size()}"
     }
