@@ -3,6 +3,7 @@ package com.cmcmarkets
 import com.cmcmarkets.beans.Bean
 import com.cmcmarkets.csv.CsvReader
 import com.cmcmarkets.csv.CsvWriter
+import java.text.SimpleDateFormat
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import java.util.concurrent.Future
@@ -13,6 +14,8 @@ import java.util.concurrent.ThreadFactory
  * Date: 13/2/11
  */
 class Util {
+
+  private static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("EEE MMM dd hh:mm:ss z yyyy")
 
   static runSafely(Closure closure) {
     try {
@@ -41,6 +44,10 @@ class Util {
       set(Calendar.MILLISECOND, 0)
     }
     calendar.getTime()
+  }
+
+  static Date parseDate(String s) {
+    DEFAULT_DATE_FORMAT.parse(s)
   }
 
   static Collection extractFrom(Collection collection, Closure shouldExtract) { // TODO add to GDK more dynamically
