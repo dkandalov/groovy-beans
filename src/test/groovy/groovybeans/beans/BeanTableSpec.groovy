@@ -4,10 +4,6 @@ import org.junit.Test
 import static groovybeans.beans.Bean.bean
 import static groovybeans.beans.Bean.beans
 
- /**
- * User: dima
- * Date: 16/3/11
- */
 class BeanTableSpec {
   @Test void shouldInsertValues() {
     def table = new BeanTable(["key"])

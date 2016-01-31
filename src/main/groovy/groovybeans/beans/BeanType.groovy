@@ -7,9 +7,6 @@ import org.codehaus.groovy.runtime.NullObject
 /**
  * It was supposed to be something like type for bean fields.
  * But didn't have to be more than a bunch of converters.
- *
- * User: dima
- * Date: 13/2/11
  */
 class BeanType {
 

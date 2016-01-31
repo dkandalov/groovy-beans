@@ -9,10 +9,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.Future
 import java.util.concurrent.ThreadFactory
 
-/**
- * User: dima
- * Date: 13/2/11
- */
+
 class Util {
 
   private static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("EEE MMM dd hh:mm:ss z yyyy")

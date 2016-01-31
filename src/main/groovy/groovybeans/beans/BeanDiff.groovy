@@ -1,9 +1,6 @@
 package groovybeans.beans
 
-/**
- * User: dima
- * Date: 22/2/11
- */
+
 class BeanDiff {
   static BeanDiff NO_DIFF = new BeanDiff([], [], [], null, null)
 
@@ -29,8 +26,6 @@ class BeanDiff {
   }
 
   /**
-   * @param bean1
-   * @param bean2
    * @param comparator closure which returns true if values are equals or false otherwise
    * @return
    */

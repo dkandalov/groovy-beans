@@ -4,10 +4,7 @@ import org.junit.Test
 import groovybeans.Util
 import static Util.date
 
-/**
- * User: dima
- * Date: 13/2/11
- */
+
 class BeanTypeSpec {
   def shouldFail = new GroovyTestCase().&shouldFail
 

@@ -4,10 +4,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.LinkedBlockingDeque
 import java.util.concurrent.TimeUnit
 
-/**
- * User: dima
- * Date: 19/3/11
- */
+
 class DataSequenceComparator {
   final def deque1 = new LinkedBlockingDeque()
   final def deque2 = new LinkedBlockingDeque()

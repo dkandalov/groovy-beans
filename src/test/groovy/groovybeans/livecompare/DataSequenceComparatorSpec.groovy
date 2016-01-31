@@ -1,13 +1,13 @@
 package groovybeans.livecompare
 
+import org.junit.Ignore
+
 import java.util.concurrent.LinkedBlockingDeque
 import org.junit.Test
 import static java.util.concurrent.TimeUnit.*
 
-/**
- * User: dima
- * Date: 20/3/11
- */
+
+@Ignore
 class DataSequenceComparatorSpec {
   private static final int PERIOD = 10
 

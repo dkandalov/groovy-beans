@@ -3,12 +3,7 @@ package groovybeans.beans
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-/**
- * // TODO document
- *
- * User: dima
- * Date: 22/2/11
- */
+
 class BeanListDiff { // TODO have pretty printer for diffs
   // TODO have option to compare the rest of the fields
   static BeanListDiff diff(Collection<Bean> beans1, Collection<Bean> beans2, List keyFields) {

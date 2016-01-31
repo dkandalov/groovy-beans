@@ -6,9 +6,7 @@ import org.junit.Test
 import static org.junit.Assert.fail
 import static groovybeans.beans.Bean.bean
 
-/**
- * User: DKandalov
- */
+
 class StorageSpec {
   private static String TEST_ID = StorageSpec.class.simpleName + "_test_object"
 

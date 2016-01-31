@@ -21,9 +21,6 @@ import groovybeans.beans.Bean
  *    - strict writer: fail fast
  *
  *  - append to existing .csv file (i.e. read file header and write beans accordingly)
- *
- * User: dima
- * Date: 15/2/11
  */
 class CsvWriter implements Closeable {
   private List header = []

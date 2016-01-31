@@ -2,10 +2,7 @@ package groovybeans.livecompare
 
 import org.junit.Test
 
-/**
- * User: dima
- * Date: 19/3/11
- */
+
 class ListComparatorSpec {
   @Test public void shouldNotDoAnything_WhenListsAreEmpty() {
     assert new ListComparator().compare([], []) == [:]

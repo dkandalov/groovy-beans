@@ -4,9 +4,8 @@ import org.junit.Test
 
 import static groovybeans.Util.date
 import static groovybeans.Util.parseDate
-/**
- * User: DKandalov
- */
+
+
 class UtilTest {
   @Test public void shouldParseDateFromDefaultDateToString() {
     def aDate = date(23, 9, 2011)

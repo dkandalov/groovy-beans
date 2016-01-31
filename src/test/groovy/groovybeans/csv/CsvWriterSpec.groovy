@@ -5,10 +5,7 @@ import org.junit.Test
 import static groovybeans.Util.*
 import static groovybeans.beans.Bean.*
 
-/**
- * User: dima
- * Date: 15/2/11
- */
+
 class CsvWriterSpec {
 
   @Test public void shouldCreateEmptyCsvForEmptyInput() {

@@ -1,9 +1,5 @@
 package groovybeans.beans
 
-/**
- * User: dima
- * Date: 10/3/11
- */
 class BeanTable {
   private Map<List, Bean> beans
   private List<String> keys

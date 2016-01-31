@@ -11,16 +11,12 @@ package groovybeans.beans
  *
  *  + be able to diff beans
  *  - be able to do sql-like operations on beans
- *
- * User: dima
- * Date: 8/2/11
  */
 class Bean {
   private def data = [:]
   private def beanType = [:]
 
   /**
-   * @data
    * @return collection of beans created from {@code data}
    */
   static Collection<Bean> beans(Collection<Map> data) {
@@ -28,7 +24,6 @@ class Bean {
   }
 
   /**
-   * @data
    * @return collection of beans created from {@code data}
    */
   static Collection<Bean> beans(Map... data) {
@@ -43,7 +38,6 @@ class Bean {
   }
 
   /**
-   * @data
    * @return {@link Bean} with values copied from {@data}
    */
   static Bean bean(Map data) {

@@ -3,10 +3,6 @@ package groovybeans.beans
 import org.junit.Test
 import static groovybeans.beans.Bean.bean
 
- /**
- * User: dima
- * Date: 8/2/11
- */
 class BeanSpec {
   @Test void shouldStoreValuesAssignedToNotExistingProperties() {
     def bean = new Bean()

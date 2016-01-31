@@ -18,9 +18,6 @@ import groovybeans.beans.Bean
  *  - detect when file content doesn't match "beanType"
  *    - nice reader: fill fields that match
  *    - strict reader: fail fast
- *
- * User: dima
- * Date: 9/2/11
  */
 class CsvReader {
 

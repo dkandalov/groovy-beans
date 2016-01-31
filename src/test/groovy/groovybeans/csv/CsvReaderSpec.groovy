@@ -5,10 +5,7 @@ import groovybeans.beans.BeanType
 import org.junit.Test
 import static groovybeans.beans.Bean.*
 
- /**
- * User: dima
- * Date: 9/2/11
- */
+
 class CsvReaderSpec {
   def shouldFail = new GroovyTestCase().&shouldFail
 

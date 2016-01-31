@@ -1,9 +1,6 @@
 package groovybeans.livecompare
 
-/**
- * User: dima
- * Date: 19/3/11
- */
+
 class ListComparator {
   private List list1
   private List list2

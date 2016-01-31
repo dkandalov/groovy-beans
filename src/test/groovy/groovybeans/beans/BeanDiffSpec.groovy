@@ -3,10 +3,7 @@ package groovybeans.beans
 import org.junit.Test
 import static groovybeans.beans.Bean.bean
 
-/**
- * User: dima
- * Date: 22/2/11
- */
+
 class BeanDiffSpec {
   @Test void emptyBeansShouldAlwaysMatch() {
     def bean1 = bean()

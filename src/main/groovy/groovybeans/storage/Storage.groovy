@@ -6,10 +6,7 @@ import com.thoughtworks.xstream.XStream
 import com.thoughtworks.xstream.io.xml.StaxDriver
 import sun.tools.jstat.Closure
 
-/**
- * User: dima
- * Date: 19/3/11
- */
+
 class Storage { // TODO document
   private static final String STORAGE = ".storage"
   static def xStream = new XStream(new StaxDriver())
